@@ -17,13 +17,13 @@ namespace CustomUnit
 {
     public class Plugin : Plugin<Config>
     {
-        public static Plugin Instance;
+        public static Plugin Instance { get; private set; }
 
-        public override string Name => base.Name;
-        public override string Prefix => base.Prefix;
-        public override string Author => base.Author;
-        public override Version Version => base.Version;
-        public override Version RequiredExiledVersion => base.RequiredExiledVersion;
+        public override string Name => "Custom Unit";
+        public override string Prefix => "CustomUnit";
+        public override string Author => "VALERA771#1471";
+        public override Version Version => new Version(1, 0, 0);
+        public override Version RequiredExiledVersion => new Version(6, 0, 0);
 
         public override void OnEnabled()
         {
@@ -77,8 +77,6 @@ namespace CustomUnit
                                 player.AddAmmo(ammo.Key, ammo.Value);
                             player.CustomInfo = Instance.Config.UnitName + " solder";
                             player.InfoArea = PlayerInfoArea.Nickname & PlayerInfoArea.CustomInfo & PlayerInfoArea.Badge;
-
-                            player.Role.
                         }
 
                         Cassie.Message(Instance.Config.CassieText.Replace("%name%", Instance.Config.UnitName), isSubtitles: true);
