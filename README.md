@@ -4,9 +4,11 @@
 Allows you to create own custom team
 
 # Accpeptable config values
+
 ### team
 - NineTailedFox
 - ChaosInsurgency
+
 
 ### role
 - Scp173
@@ -30,6 +32,7 @@ Allows you to create own custom team
 - ChaosRepressor
 - ChaosMarauder
 - Overwatch
+
 
 ### inventory
 - KeycardJanitor
@@ -79,10 +82,12 @@ Allows you to create own custom team
 - SCP1576
 - Jailbird
 
+
 ### ammos
 - Nato556
 - Nato762
 - Nato9
 - Ammo12Gauge
 - Ammo44Cal
+
 *Second value is amount to add*
