@@ -1,6 +1,7 @@
 ﻿using Exiled.API.Enums;
 using Exiled.API.Interfaces;
 using PlayerRoles;
+using PluginAPI.Enums;
 using Respawning;
 using System;
 using System.Collections.Generic;
@@ -13,23 +14,27 @@ namespace CustomUnit
 {
     public sealed class Config : IConfig
     {
-        [Description("Whether or not plugin is enabled")]
         public bool IsEnabled { get; set; } = true;
-
-        [Description("Whether or not debug messages should appear")]
         public bool Debug { get; set; } = false;
+
+        /*[Description("Uses chance system. If \"false\" will use ticket system")]
+        public bool UseChance { get; set; } = true;*/
 
         [Description("Unit name")]
         public string UnitName { get; set; } = "UnitName";
 
-        [Description("Chance.From 1 to 100")]
+        [Description("Chance. From 1 to 100")]
         public int SpawnChance { get; set; } = 10;
 
         [Description("Spawn team")]
         public SpawnableTeamType Team { get; set; } = SpawnableTeamType.ChaosInsurgency;
 
-        [Description("Role")]
-        public RoleTypeId Role { get; set; } = RoleTypeId.Tutorial;
+        [Description("Roles. Picks up a random role for each player in unit")]
+        public HashSet<RoleTypeId> Roles { get; set; } = new HashSet<RoleTypeId>
+        {
+            RoleTypeId.Tutorial,
+            RoleTypeId.Scp939
+        };
 
         [Description("Inventory item")]
         public List<ItemType> Inventory { get; set; } = new List<ItemType>()
@@ -40,13 +45,27 @@ namespace CustomUnit
         };
 
         [Description("Inventory Ammo")]
-        public Dictionary<AmmoType, ushort> Ammos = new Dictionary<AmmoType, ushort>()
+        public Dictionary<AmmoType, ushort> Ammos { get; set; } = new Dictionary<AmmoType, ushort>()
         {
             { AmmoType.Nato556, 100 },
-            { AmmoType.Nato762, 50 }
+            { AmmoType.Nato9, 50 }
         };
 
-        [Description("CASSIE announchement")]
+        [Description("CASSIE announchement. Replace %name% with unit_name")]
         public string CassieText { get; set; } = "%name% has arrived!";
+
+        [Description("Teams that unit can damage")]
+        public List<Team> AllowToDamage { get; set; } = new List<Team>
+        {
+            PlayerRoles.Team.SCPs
+        };
+
+        /*[Description("Events to add tickets")]
+        public Dictionary<ServerEventType, int> Events { get; set; } = new Dictionary<ServerEventType, int>
+        {
+            { ServerEventType.PlayerPickupScp330, 1},
+            { ServerEventType.PlayerCoinFlip, -1},
+            { ServerEventType.}
+        };*/
     }
 }

@@ -3,7 +3,6 @@ using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.API.Features.Spawn;
 using Exiled.Events.EventArgs.Server;
-using PlayerRoles;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +11,8 @@ using Random = System.Random;
 using Map = Exiled.Events.Handlers.Server;
 using MEC;
 using Exiled.API.Features.Roles;
+using Exiled.Events.EventArgs.Player;
+using System.Linq;
 
 namespace CustomUnit
 {
@@ -27,15 +28,17 @@ namespace CustomUnit
 
         public override void OnEnabled()
         {
+            _event = new EventHadlers();
             Instance = this;
-            Map.RespawningTeam += OnTeamChoose;
+            Map.RespawningTeam += _event.OnTeamChoose;
             base.OnEnabled();
         }
 
         public override void OnDisabled()
         {
+            _event = null;
             Instance = null;
-            Map.RespawningTeam -= OnTeamChoose;
+            Map.RespawningTeam -= _event.OnTeamChoose;
             base.OnDisabled();
         }
 
@@ -48,41 +51,8 @@ namespace CustomUnit
         {
         }
 
-
-        public void OnTeamChoose(RespawningTeamEventArgs ev)
-        {
-            if (ev.NextKnownTeam == Instance.Config.Team)
-            {
-                Random rn = new Random();
-                int ch = rn.Next(0, 101);
-                Log.Info(ch);
-                if (Instance.Config.SpawnChance > ch)
-                {
-                    Timing.CallDelayed(0.5f, () =>
-                    {
-                        foreach (Player player in ev.Players)
-                        {
-                            SpawnLocation loc;
-                            if (ev.NextKnownTeam == Respawning.SpawnableTeamType.NineTailedFox) loc = RoleTypeId.NtfCaptain.GetRandomSpawnLocation();
-                            else loc = RoleTypeId.ChaosConscript.GetRandomSpawnLocation();
-
-                            Vector3 pos = loc.Position;
-
-                            player.Role.Set(Instance.Config.Role, SpawnReason.Respawn);
-                            player.Position = pos;
-                            player.ClearInventory();
-                            foreach (ItemType item in Instance.Config.Inventory)
-                                player.AddItem(item);
-                            foreach (KeyValuePair<AmmoType, ushort> ammo in Instance.Config.Ammos)
-                                player.AddAmmo(ammo.Key, ammo.Value);
-                            player.CustomInfo = Instance.Config.UnitName + " solder";
-                            player.InfoArea = PlayerInfoArea.Nickname & PlayerInfoArea.CustomInfo & PlayerInfoArea.Badge;
-                        }
-
-                        Cassie.Message(Instance.Config.CassieText.Replace("%name%", Instance.Config.UnitName), isSubtitles: true);
-                    });
-                }
-            }
-        }
+        public static HashSet<Player> Soldiers = new HashSet<Player>();
+        public static EventHadlers _event;
+        public static int Tickets { get; set; } = 0;
     }
 }
