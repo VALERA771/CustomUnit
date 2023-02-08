@@ -1,18 +1,10 @@
-﻿using Exiled.API.Enums;
-using Exiled.API.Extensions;
-using Exiled.API.Features;
-using Exiled.API.Features.Spawn;
-using Exiled.Events.EventArgs.Server;
+﻿using Exiled.API.Features;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
-using Random = System.Random;
 using Map = Exiled.Events.Handlers.Server;
-using MEC;
-using Exiled.API.Features.Roles;
-using Exiled.Events.EventArgs.Player;
-using System.Linq;
+using Player = Exiled.Events.Handlers.Player;
+using Server = Exiled.Events.Handlers.Server;
 
 namespace CustomUnit
 {
@@ -23,7 +15,7 @@ namespace CustomUnit
         public override string Name => "Custom Unit";
         public override string Prefix => "CustomUnit";
         public override string Author => "VALERA771#1471";
-        public override Version Version => new Version(1, 0, 0);
+        public override Version Version => new Version(1, 2, 0);
         public override Version RequiredExiledVersion => new Version(6, 0, 0);
 
         public override void OnEnabled()
@@ -31,6 +23,8 @@ namespace CustomUnit
             _event = new EventHadlers();
             Instance = this;
             Map.RespawningTeam += _event.OnTeamChoose;
+            Player.Died += _event.OnDied;
+            Player.Shot += _event.OnShooting;
             base.OnEnabled();
         }
 
@@ -39,6 +33,8 @@ namespace CustomUnit
             _event = null;
             Instance = null;
             Map.RespawningTeam -= _event.OnTeamChoose;
+            Player.Died -= _event.OnDied;
+            Player.Shot -= _event.OnShooting;
             base.OnDisabled();
         }
 
@@ -51,7 +47,7 @@ namespace CustomUnit
         {
         }
 
-        public static HashSet<Player> Soldiers = new HashSet<Player>();
+        public static HashSet<Exiled.API.Features.Player> Soldiers = new HashSet<Exiled.API.Features.Player>();
         public static EventHadlers _event;
         public static int Tickets { get; set; } = 0;
     }

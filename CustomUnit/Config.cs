@@ -66,6 +66,9 @@ namespace CustomUnit
             { ServerEventType.PlayerPickupScp330, 1},
             { ServerEventType.PlayerCoinFlip, -1},
             { ServerEventType.}
-        };*/
+        };
+
+        [Description("Tickets to remove if team spawns")]
+        public int TicketsToRemove { get; set; } = 30;*/
     }
 }
