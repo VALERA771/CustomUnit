@@ -91,3 +91,12 @@ Allows you to create own custom team
 - Ammo44Cal
 
 *Second value is amount to add*
+
+
+### allow_to_damage
+- SCPs
+- ClassD
+- Scientists
+- FoundationForces
+- ChaosInsurgensy
+- OtherAlive (tutorals)
