@@ -100,3 +100,11 @@ Allows you to create own custom team
 - FoundationForces
 - ChaosInsurgensy
 - OtherAlive (tutorals)
+
+
+# Commands and perms
+
+|command name|required perm|
+|-----|--------|
+|reload|cu.reload|
+|spawn|cu.spawn|
