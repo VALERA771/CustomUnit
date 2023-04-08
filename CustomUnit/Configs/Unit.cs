@@ -1,14 +1,9 @@
-﻿using CustomUnit.EventOptions;
-using Exiled.API.Enums;
+﻿using Exiled.API.Enums;
 using PlayerRoles;
 using PluginAPI.Enums;
 using Respawning;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CustomUnit.Configs
 {
@@ -54,6 +49,9 @@ namespace CustomUnit.Configs
 
         [Description("CASSIE announchement. Replaces %name% with unit_name")]
         public string CassieText { get; set; } = "%name% has arrived!";
+
+        [Description("Should CASSIE message have subtiteles?")]
+        public bool Subtiteled { get; set; } = true;
 
         [Description("Teams that unit can damage")]
         public List<Team> AllowToDamage { get; set; } = new()

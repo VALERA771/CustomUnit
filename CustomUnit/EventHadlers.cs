@@ -142,7 +142,7 @@ namespace CustomUnit
                 Plugin.Soldiers.Add(player, un.UnitName);
             }
 
-            Cassie.Message(un.CassieText.Replace("%name%", un.UnitName), isSubtitles: true);
+            Cassie.Message(un.CassieText.Replace("%name%", un.UnitName), isSubtitles: un.Subtiteled);
         }
     }
 }

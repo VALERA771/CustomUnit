@@ -4,6 +4,7 @@ using Exiled.Permissions.Extensions;
 using Respawning;
 using System;
 using System.Linq;
+using PlayerRoles.Spectating;
 
 using Random = UnityEngine.Random;
 
@@ -31,13 +32,32 @@ namespace CustomUnit.Commands
                 response = "You don't have permissions to execute this command";
                 return false;
             }
-            if (arguments.Count == 0)
+            if (arguments.Count != 2)
             {
                 response = this.DisplayCommandUsage();
                 return false;
             }
 
+            if (!Round.InProgress)
+            {
+                response = "Round not in progress! Can't spawn unit!";
+                return false;
+            }
+
             SpawnableTeamType team;
+
+            var spawn = Player.List.Where(x => x.ReferenceHub.roleManager.CurrentRole is SpectatorRole
+                {
+                    ReadyToRespawn: true
+                })
+                .ToList();
+
+            if (!spawn.Any())
+            {
+                response = "No spectators!";
+                return false;
+            }
+
             switch (arguments.At(0).ToLower())
             {
                 case "ntf":
@@ -49,12 +69,13 @@ namespace CustomUnit.Commands
                 default:
                     if (Plugin.Configs.Values.ToList().Exists(x => x.UnitName.ToLower() == arguments.At(0).ToLower()))
                     {
-                        var spawn = Player.List.Where(x => RespawnManager.Singleton.CheckSpawnable(x.ReferenceHub))
-                            .ToList();
+                        Log.Info(0);
                         var unit = Plugin.Configs.Values.ToList()
                             .Find(x => x.UnitName.ToLower() == arguments.At(0).ToLower());
 
                         spawn.ShuffleList();
+
+                        Log.Info(1);
 
                         if (!bool.TryParse(arguments.At(1).ToLower(), out var cond))
                         {
@@ -62,11 +83,18 @@ namespace CustomUnit.Commands
                             return false;
                         }
 
-                        var num = Random.Range(0, 7);
+                        var num = Random.Range(0, Player.List.Count() < 7 ? Player.List.Count() - 1 : 7);
+
+                        Log.Info(string.Join(" ", RespawnManager.SpawnableTeams.Keys.ToList()));
 
                         if (cond)
                         {
-                            EventHadlers.Spawn(unit, spawn.GetRange(num, RespawnManager.SpawnableTeams[unit.Team].MaxWaveSize - num), unit.Team);
+                            Log.Info(2);
+                            EventHadlers.Spawn(unit,
+                                spawn.GetRange(num,
+                                    RespawnManager.SpawnableTeams[unit.Team].MaxWaveSize > spawn.Count
+                                        ? spawn.Count
+                                        : RespawnManager.SpawnableTeams[unit.Team].MaxWaveSize), unit.Team);
 
                             response = "Successfully spawned!";
                             return true;
@@ -75,9 +103,13 @@ namespace CustomUnit.Commands
                         {
                             if (unit.UseChance)
                             {
-                                if (Random.Range(0, 101) > 65)
+                                if (Random.Range(0, 101) < unit.SpawnChance)
                                 {
-                                    EventHadlers.Spawn(unit, spawn.GetRange(num, RespawnManager.SpawnableTeams[unit.Team].MaxWaveSize - num), unit.Team);
+                                    EventHadlers.Spawn(unit,
+                                        spawn.GetRange(num,
+                                            RespawnManager.SpawnableTeams[unit.Team].MaxWaveSize > spawn.Count
+                                                ? RespawnManager.SpawnableTeams[unit.Team].MaxWaveSize - spawn.Count
+                                                : RespawnManager.SpawnableTeams[unit.Team].MaxWaveSize), unit.Team);
 
                                     response = "Successfully spawned!";
                                     return true;
@@ -116,7 +148,7 @@ namespace CustomUnit.Commands
                     }
             }
 
-            RespawnManager.Singleton.ForceSpawnTeam(team);
+            Methods.SpawnDefault(team, spawn.Select(x => x.ReferenceHub).ToList());
 
             response = "Spawned in-game team";
             return true;

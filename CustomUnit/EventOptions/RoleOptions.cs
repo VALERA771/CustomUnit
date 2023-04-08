@@ -1,4 +1,4 @@
-﻿using PlayerRoles;
+﻿/*using PlayerRoles;
 using PluginAPI.Enums;
 using System;
 using System.Collections.Generic;
@@ -23,3 +23,4 @@ namespace CustomUnit.EventOptions
         public List<RoleTypeId> Allow { get; set; } = new();
     }
 }
+*/

@@ -1,14 +1,6 @@
-﻿using CustomUnit.EventOptions;
-using Exiled.API.Features;
+﻿using Exiled.API.Features;
 using Exiled.API.Interfaces;
-using PlayerRoles;
-using PluginAPI.Enums;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CustomUnit.Configs
 {

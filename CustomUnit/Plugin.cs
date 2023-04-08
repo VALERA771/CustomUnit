@@ -1,21 +1,17 @@
 ﻿using System;
 using CustomUnit.Configs;
 using Exiled.API.Features;
-using Exiled.Loader;
-using Exiled.Loader.Features.Configs.CustomConverters;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CustomUnit.EventOptions;
-using Exiled.Events.Handlers;
-using Exiled.Loader.Features.Configs;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
+
 using Map = Exiled.Events.Handlers.Server;
 using Player = Exiled.Events.Handlers.Player;
 using Server = Exiled.Events.Handlers.Server;
-using YamlDotNet.Serialization.NodeDeserializers;
 using Version = System.Version;
 using Warhead = Exiled.Events.Handlers.Warhead;
 
@@ -28,9 +24,9 @@ namespace CustomUnit
         public static string ExampleUnit { get; private set; }
 
         public override string Name => "Custom Unit";
-        public override string Prefix => "CustomUnit";
+        public override string Prefix => Assembly.GetName().Name;
         public override string Author => "VALERA771#1471";
-        public override Version Version => new(2, 0, 0);
+        public override Version Version => Assembly.GetName().Version;
         public override Version RequiredExiledVersion => new(6, 0, 0);
 
         public static ISerializer Serializer { get; private set; }
@@ -129,6 +125,7 @@ namespace CustomUnit
 
             foreach (var file in Directory.GetFiles(Instance.Config.UnitPath))
             {
+                int i = 0;
                 try
                 {
                     var conf = Deserializer.Deserialize<Unit>(File.ReadAllText(file));
@@ -137,7 +134,8 @@ namespace CustomUnit
                     else
                     {
                         File.WriteAllText(file, Serializer.Serialize(UnitConfig));
-                        Configs.Add("UnitName", Deserializer.Deserialize<Unit>(File.ReadAllText(file)));
+                        Configs.Add($"UnitName{i}", Deserializer.Deserialize<Unit>(File.ReadAllText(file)));
+                        i++;
                     }
                 }
                 catch (YamlException ex)
