@@ -1,4 +1,5 @@
-﻿using CustomUnit.Configs;
+﻿using System;
+using CustomUnit.Configs;
 using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
@@ -20,6 +21,8 @@ namespace CustomUnit
         public void OnTeamChoose(RespawningTeamEventArgs ev)
         {
             if (!SpawnChance(ev.NextKnownTeam, ev.Players)) SpawnTicket(ev.NextKnownTeam, ev.Players);
+
+            Methods.AddChance(ev);
         }
 
         public void OnShooting(ShotEventArgs ev)
@@ -48,25 +51,26 @@ namespace CustomUnit
                 if (Plugin.Configs[name1].AllowToDamage.Contains(ev.Player.Role.Team))
                     ev.CanHurt = true; return;
             }
+
+            Methods.AddChance(ev);
         }
 
         public void OnDied(DiedEventArgs ev)
         {
             if (Plugin.Soldiers.Keys.Contains(ev.Player))
                 Plugin.Soldiers.Remove(ev.Player);
+
+            Methods.AddChance(ev);
         }
 
         public static bool SpawnChance(SpawnableTeamType team, List<Player> players)
         {
-            Random rn = new Random();
+            Random rn = new();
 
-            foreach (var un in Plugin.Chance)
+            foreach (var un in Plugin.Chance.Where(x => x.Team == team))
             {
-                if (un.SpawnChance > rn.Next(101))
+                if (un.SpawnChance < rn.Next(101))
                 {
-                    if (un.Team != team)
-                        continue;
-
                     Timing.CallDelayed(0.5f, () =>
                     {
                         Spawn(un, players, team);
@@ -101,23 +105,28 @@ namespace CustomUnit
             return false;
         }
 
-        private static void Spawn(Unit un, List<Player> players, SpawnableTeamType team)
+        public static void Spawn(Unit un, List<Player> players, SpawnableTeamType team)
         {
             foreach (Player player in players)
             {
-                SpawnLocation loc;
-                if (team == SpawnableTeamType.NineTailedFox) loc = PlayerRoles.RoleTypeId.NtfCaptain.GetRandomSpawnLocation();
-                else loc = PlayerRoles.RoleTypeId.ChaosConscript.GetRandomSpawnLocation();
+                SpawnLocation loc = team == SpawnableTeamType.NineTailedFox ? PlayerRoles.RoleTypeId.NtfCaptain.GetRandomSpawnLocation() : PlayerRoles.RoleTypeId.ChaosConscript.GetRandomSpawnLocation();
+
+                if (loc == null)
+                    throw new NullReferenceException("SpawnLocation null");
 
                 Vector3 pos = loc.Position;
 
                 player.Role.Set(un.Roles.ToList().RandomItem(), SpawnReason.Respawn);
                 player.Position = pos;
-                player.ClearInventory();
+
+                if (un.OverrideInventory)
+                    player.ClearInventory();
+
                 foreach (ItemType item in un.Inventory)
                     player.AddItem(item);
                 foreach (KeyValuePair<AmmoType, ushort> ammo in un.Ammos)
                     player.AddAmmo(ammo.Key, ammo.Value);
+
                 player.CustomInfo = un.UnitName + " solder";
                 player.InfoArea = PlayerInfoArea.Nickname & PlayerInfoArea.CustomInfo & PlayerInfoArea.Badge;
 

@@ -1,4 +1,5 @@
-﻿using Exiled.API.Enums;
+﻿using CustomUnit.EventOptions;
+using Exiled.API.Enums;
 using PlayerRoles;
 using PluginAPI.Enums;
 using Respawning;
@@ -13,8 +14,8 @@ namespace CustomUnit.Configs
 {
     public sealed class Unit
     {
-        /*[Description("Uses chance system. If \"false\" will use ticket system")]
-        public bool UseChance { get; set; } = true;*/
+        [Description("Uses chance system. If \"false\" will use ticket system")]
+        public bool UseChance { get; set; } = true;
 
         [Description("Unit name")]
         public string UnitName { get; set; } = "UnitName";
@@ -26,14 +27,18 @@ namespace CustomUnit.Configs
         public SpawnableTeamType Team { get; set; } = SpawnableTeamType.ChaosInsurgency;
 
         [Description("Roles. Picks up a random role for each player in unit")]
-        public HashSet<RoleTypeId> Roles { get; set; } = new HashSet<RoleTypeId>
+        public HashSet<RoleTypeId> Roles { get; set; } = new()
         {
             RoleTypeId.Tutorial,
             RoleTypeId.Scp939
         };
 
+        [Description(
+            "Should players on spawn have their default inventories? (If \"false\" items from inventory will be just added otherwise they'll replace defualt items")]
+        public bool OverrideInventory { get; set; } = true;
+
         [Description("Inventory item")]
-        public List<ItemType> Inventory { get; set; } = new List<ItemType>()
+        public List<ItemType> Inventory { get; set; } = new()
         {
             ItemType.Medkit,
             ItemType.KeycardChaosInsurgency,
@@ -41,13 +46,13 @@ namespace CustomUnit.Configs
         };
 
         [Description("Inventory Ammo")]
-        public Dictionary<AmmoType, ushort> Ammos { get; set; } = new Dictionary<AmmoType, ushort>()
+        public Dictionary<AmmoType, ushort> Ammos { get; set; } = new()
         {
             { AmmoType.Nato556, 100 },
             { AmmoType.Nato9, 50 }
         };
 
-        [Description("CASSIE announchement. Replace %name% with unit_name")]
+        [Description("CASSIE announchement. Replaces %name% with unit_name")]
         public string CassieText { get; set; } = "%name% has arrived!";
 
         [Description("Teams that unit can damage")]
@@ -57,13 +62,19 @@ namespace CustomUnit.Configs
         };
 
         [Description("Events to add tickets")]
-        public Dictionary<ServerEventType, int> Events { get; set; } = new Dictionary<ServerEventType, int>
+        public Dictionary<ServerEventType, int> Events { get; set; } = new()
         {
-            { ServerEventType.PlayerPickupScp330, 1},
-            { ServerEventType.PlayerCoinFlip, -1},
+            [ServerEventType.WarheadDetonation] = -1,
+            [ServerEventType.PlayerDying] = 1
         };
 
-        [Description("Tickets to remove if team spawns")]
+        [Description("Tickets to remove if team spawns (Also this value will be removed if remove_ticket_on_other is true)")]
         public int TicketsToRemove { get; set; } = 30;
+
+        [Description("Should tickets be removed if other team spawned?")]
+        public bool RemoveTicketOnOther { get; set; } = true;
+
+        [Description("Amount of ticket which team will have on start of the round")]
+        public int StartTicket { get; set; } = 0;
     }
 }

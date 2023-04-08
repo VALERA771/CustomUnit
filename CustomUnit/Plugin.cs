@@ -1,14 +1,23 @@
-﻿using CustomUnit.Configs;
+﻿using System;
+using CustomUnit.Configs;
 using Exiled.API.Features;
 using Exiled.Loader;
-using System;
+using Exiled.Loader.Features.Configs.CustomConverters;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CustomUnit.EventOptions;
+using Exiled.Events.Handlers;
+using Exiled.Loader.Features.Configs;
+using YamlDotNet.Core;
 using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 using Map = Exiled.Events.Handlers.Server;
 using Player = Exiled.Events.Handlers.Player;
 using Server = Exiled.Events.Handlers.Server;
+using YamlDotNet.Serialization.NodeDeserializers;
+using Version = System.Version;
+using Warhead = Exiled.Events.Handlers.Warhead;
 
 namespace CustomUnit
 {
@@ -24,8 +33,24 @@ namespace CustomUnit
         public override Version Version => new Version(2, 0, 0);
         public override Version RequiredExiledVersion => new Version(6, 0, 0);
 
-        public static ISerializer Serializer => new Serializer();
-        public static IDeserializer Deserializer => new Deserializer();
+        public static ISerializer Serializer => new SerializerBuilder()
+            .WithTypeConverter(new VectorsConverter())
+            .WithTypeConverter(new ColorConverter())
+            .WithTypeConverter(new AttachmentIdentifiersConverter())
+            .WithTypeInspector(inner => new CommentGatheringTypeInspector(inner))
+            .WithEmissionPhaseObjectGraphVisitor(args => new CommentsObjectGraphVisitor(args.InnerVisitor))
+            .WithNamingConvention(UnderscoredNamingConvention.Instance)
+            .IgnoreFields()
+            .Build();
+        public static IDeserializer Deserializer => new DeserializerBuilder().WithTypeConverter(new VectorsConverter()).WithTypeConverter(new ColorConverter()).WithTypeConverter(new AttachmentIdentifiersConverter())
+            .WithNamingConvention(UnderscoredNamingConvention.Instance)
+            .WithNodeDeserializer(inner => new ValidatingNodeDeserializer(inner), delegate (ITrackingRegistrationLocationSelectionSyntax<INodeDeserializer> deserializer)
+            {
+                deserializer.InsteadOf<ObjectNodeDeserializer>();
+            })
+            .IgnoreFields()
+            .IgnoreUnmatchedProperties()
+            .Build();
 
         public override void OnEnabled()
         {
@@ -38,9 +63,9 @@ namespace CustomUnit
             }
 
             _event = new EventHadlers();
-            Map.RespawningTeam += _event.OnTeamChoose;
-            Player.Died += _event.OnDied;
-            Player.Shot += _event.OnShooting;
+            
+            RegisterEvents();
+
             base.OnEnabled();
 
             LoadUnitConfig();
@@ -49,9 +74,8 @@ namespace CustomUnit
         public override void OnDisabled()
         {
             Instance = null;
-            Map.RespawningTeam -= _event.OnTeamChoose;
-            Player.Died -= _event.OnDied;
-            Player.Shot -= _event.OnShooting;
+
+            UnregisterEvents();
 
             _event = null;
             base.OnDisabled();
@@ -62,9 +86,28 @@ namespace CustomUnit
             Tickets.Clear();
         }
 
-        public override void OnReloaded()
+        public void RegisterEvents()
         {
-            base.OnReloaded();
+            Player.Died += _event.OnDied;
+            Warhead.Starting += Methods.AddChance;
+            Warhead.Stopping += Methods.AddChance;
+            Warhead.Detonating += Methods.AddChance;
+            Player.ActivatingGenerator += Methods.AddChance;
+            Player.Escaping += Methods.AddChance;
+            Player.Shot += _event.OnShooting;
+            Map.RespawningTeam += _event.OnTeamChoose;
+        }
+
+        public void UnregisterEvents()
+        {
+            Player.Died -= _event.OnDied;
+            Warhead.Starting -= Methods.AddChance;
+            Warhead.Stopping -= Methods.AddChance;
+            Warhead.Detonating -= Methods.AddChance;
+            Player.ActivatingGenerator -= Methods.AddChance;
+            Player.Escaping -= Methods.AddChance;
+            Player.Shot -= _event.OnShooting;
+            Map.RespawningTeam -= _event.OnTeamChoose;
         }
 
         public Plugin()
@@ -76,7 +119,7 @@ namespace CustomUnit
 
         public static Dictionary<string, Unit> Configs = new Dictionary<string, Unit>();
         public static HashSet<Unit> Chance = new HashSet<Unit>();
-        public static Dictionary<Unit, uint> Tickets = new Dictionary<Unit, uint>();
+        public static Dictionary<Unit, int> Tickets = new Dictionary<Unit, int>();
 
 
         public static void LoadUnitConfig()
@@ -86,23 +129,52 @@ namespace CustomUnit
 
             foreach (var file in Directory.GetFiles(Instance.Config.UnitPath))
             {
-                var conf = Deserializer.Deserialize<Unit>(File.ReadAllText(file));
-                if (conf != null)
-                    Configs.Add(conf.UnitName, conf);
-                else
+                try
                 {
-                    File.WriteAllText(file, Serializer.Serialize(UnitConfig));
-                    Configs.Add("UnitName", Deserializer.Deserialize<Unit>(File.ReadAllText(file)));
+                    var conf = Deserializer.Deserialize<Unit>(File.ReadAllText(file));
+                    if (conf != null)
+                        Configs.Add(conf.UnitName, conf);
+                    else
+                    {
+                        File.WriteAllText(file, Serializer.Serialize(UnitConfig));
+                        Configs.Add("UnitName", Deserializer.Deserialize<Unit>(File.ReadAllText(file)));
+                    }
+                }
+                catch (YamlException ex)
+                {
+                    Log.Error($"Error while deserializing {file} file. Skipping...\nError: {ex.Message}. For more info enable debug");
+                    Log.Debug(ex.StackTrace);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"Unhandled error occured while deserializing file {file}.\nError: {ex.Message}. For more info enable debug");
+                    Log.Debug(ex.StackTrace);
                 }
             }
 
             Chance = Configs.Values.ToHashSet();
 
-            /*Chance = Configs.Values.Where(x => x.UseChance).ToHashSet();
+            Chance = Configs.Values.Where(x => x.UseChance).ToHashSet();
             var tmp = Configs.Values.Where(x => !x.UseChance).ToList();
 
             foreach (var el in tmp)
-                Tickets.Add(el, 0);*/
+            {
+                bool leave = false;
+                foreach (var eventType in el.Events.Keys)
+                {
+                    if (!Options.Events.ContainsValue(eventType))
+                    {
+                        Log.Error($"Unit {el.UnitName} param 'events' contains wrong/not supported events. Check readme on github or contact developer.");
+                        leave = true;
+                        break;
+                    }
+                }
+
+                if (leave)
+                    continue;
+
+                Tickets.Add(el, el.StartTicket);
+            }
         }
     }
 }
