@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CustomUnit.EventOptions;
+using Exiled.Loader;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -47,16 +48,9 @@ namespace CustomUnit
             Events = new EventHadlers();
             RegisterEvents();
 
-            Serializer = new SerializerBuilder()
-                .WithNamingConvention(UnderscoredNamingConvention.Instance)
-                .IgnoreFields()
-                .Build();
+            Serializer = Loader.Serializer;
 
-            Deserializer = new DeserializerBuilder()
-                .IgnoreUnmatchedProperties()
-                .WithNamingConvention(UnderscoredNamingConvention.Instance)
-                .IgnoreFields()
-                .Build();
+            Deserializer = Loader.Deserializer;
 
             LoadUnitConfig();
 
