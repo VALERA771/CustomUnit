@@ -56,7 +56,7 @@ namespace CustomUnit.Configs
         public string CassieText { get; set; } = "%name% has arrived!";
 
         [Description("Teams that unit can damage")]
-        public List<Team> AllowToDamage { get; set; } = new List<Team>
+        public List<Team> AllowToDamage { get; set; } = new()
         {
             PlayerRoles.Team.SCPs
         };

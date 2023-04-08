@@ -20,9 +20,17 @@ namespace CustomUnit
     {
         public void OnTeamChoose(RespawningTeamEventArgs ev)
         {
-            if (!SpawnChance(ev.NextKnownTeam, ev.Players)) SpawnTicket(ev.NextKnownTeam, ev.Players);
+            if (!SpawnChance(ev.NextKnownTeam, ev.Players))
+            {
+                ev.IsAllowed = !SpawnTicket(ev.NextKnownTeam, ev.Players);
+            }
+            else
+                ev.IsAllowed = false;
 
             Methods.AddChance(ev);
+
+            foreach (var unit in Plugin.Tickets.Keys.Where(x => x.RemoveTicketOnOther))
+                Plugin.Tickets[unit] -= unit.TicketsToRemove;
         }
 
         public void OnShooting(ShotEventArgs ev)
@@ -63,7 +71,7 @@ namespace CustomUnit
             Methods.AddChance(ev);
         }
 
-        public static bool SpawnChance(SpawnableTeamType team, List<Player> players)
+        private static bool SpawnChance(SpawnableTeamType team, List<Player> players)
         {
             Random rn = new();
 
@@ -83,7 +91,7 @@ namespace CustomUnit
             return false;
         }
 
-        public static bool SpawnTicket(SpawnableTeamType team, List<Player> players)
+        private static bool SpawnTicket(SpawnableTeamType team, List<Player> players)
         {
             int tick = 0;
             if (team == SpawnableTeamType.ChaosInsurgency) tick = (int)Respawn.ChaosTickets;
@@ -97,6 +105,7 @@ namespace CustomUnit
                 Timing.CallDelayed(0.5f, () =>
                 {
                     Spawn(conf.Key, players, team);
+                    Plugin.Tickets[conf.Key] -= conf.Key.TicketsToRemove;
                 });
 
                 return true;

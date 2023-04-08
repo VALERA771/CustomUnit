@@ -24,51 +24,47 @@ namespace CustomUnit
     public class Plugin : Plugin<Configs.Plugin>
     {
         public static Plugin Instance { get; private set; }
-        public static Unit UnitConfig => new Unit();
-        public static string ExampleUnit => Path.Combine(Instance.Config.UnitPath, "ExampleUnit.yml");
+        public static Unit UnitConfig => new();
+        public static string ExampleUnit { get; private set; }
 
         public override string Name => "Custom Unit";
         public override string Prefix => "CustomUnit";
         public override string Author => "VALERA771#1471";
-        public override Version Version => new Version(2, 0, 0);
-        public override Version RequiredExiledVersion => new Version(6, 0, 0);
+        public override Version Version => new(2, 0, 0);
+        public override Version RequiredExiledVersion => new(6, 0, 0);
 
-        public static ISerializer Serializer => new SerializerBuilder()
-            .WithTypeConverter(new VectorsConverter())
-            .WithTypeConverter(new ColorConverter())
-            .WithTypeConverter(new AttachmentIdentifiersConverter())
-            .WithTypeInspector(inner => new CommentGatheringTypeInspector(inner))
-            .WithEmissionPhaseObjectGraphVisitor(args => new CommentsObjectGraphVisitor(args.InnerVisitor))
-            .WithNamingConvention(UnderscoredNamingConvention.Instance)
-            .IgnoreFields()
-            .Build();
-        public static IDeserializer Deserializer => new DeserializerBuilder().WithTypeConverter(new VectorsConverter()).WithTypeConverter(new ColorConverter()).WithTypeConverter(new AttachmentIdentifiersConverter())
-            .WithNamingConvention(UnderscoredNamingConvention.Instance)
-            .WithNodeDeserializer(inner => new ValidatingNodeDeserializer(inner), delegate (ITrackingRegistrationLocationSelectionSyntax<INodeDeserializer> deserializer)
-            {
-                deserializer.InsteadOf<ObjectNodeDeserializer>();
-            })
-            .IgnoreFields()
-            .IgnoreUnmatchedProperties()
-            .Build();
+        public static ISerializer Serializer { get; private set; }
+        public static IDeserializer Deserializer { get; private set; }
 
         public override void OnEnabled()
         {
             Instance = this;
 
-            if (!Directory.Exists(Instance.Config.UnitPath))
+            ExampleUnit = Path.Combine(Config.UnitPath, "ExampleUnit.yml");
+
+            if (!Directory.Exists(Config.UnitPath))
             {
                 Directory.CreateDirectory(Instance.Config.UnitPath);
                 Log.Info("Created directory for plugin");
             }
 
-            _event = new EventHadlers();
-            
+            Events = new EventHadlers();
             RegisterEvents();
 
-            base.OnEnabled();
+            Serializer = new SerializerBuilder()
+                .WithNamingConvention(UnderscoredNamingConvention.Instance)
+                .IgnoreFields()
+                .Build();
+
+            Deserializer = new DeserializerBuilder()
+                .IgnoreUnmatchedProperties()
+                .WithNamingConvention(UnderscoredNamingConvention.Instance)
+                .IgnoreFields()
+                .Build();
 
             LoadUnitConfig();
+
+            base.OnEnabled();
         }
 
         public override void OnDisabled()
@@ -77,49 +73,53 @@ namespace CustomUnit
 
             UnregisterEvents();
 
-            _event = null;
-            base.OnDisabled();
+            Events = null;
 
             Soldiers.Clear();
             Configs.Clear();
             Chance.Clear();
             Tickets.Clear();
+
+            Serializer = null;
+            Deserializer = null;
+
+            base.OnDisabled();
         }
 
         public void RegisterEvents()
         {
-            Player.Died += _event.OnDied;
+            Player.Died += Events.OnDied;
             Warhead.Starting += Methods.AddChance;
             Warhead.Stopping += Methods.AddChance;
             Warhead.Detonating += Methods.AddChance;
             Player.ActivatingGenerator += Methods.AddChance;
             Player.Escaping += Methods.AddChance;
-            Player.Shot += _event.OnShooting;
-            Map.RespawningTeam += _event.OnTeamChoose;
+            Player.Shot += Events.OnShooting;
+            Map.RespawningTeam += Events.OnTeamChoose;
         }
 
         public void UnregisterEvents()
         {
-            Player.Died -= _event.OnDied;
+            Player.Died -= Events.OnDied;
             Warhead.Starting -= Methods.AddChance;
             Warhead.Stopping -= Methods.AddChance;
             Warhead.Detonating -= Methods.AddChance;
             Player.ActivatingGenerator -= Methods.AddChance;
             Player.Escaping -= Methods.AddChance;
-            Player.Shot -= _event.OnShooting;
-            Map.RespawningTeam -= _event.OnTeamChoose;
+            Player.Shot -= Events.OnShooting;
+            Map.RespawningTeam -= Events.OnTeamChoose;
         }
 
         public Plugin()
         {
         }
 
-        public static Dictionary<Exiled.API.Features.Player, string> Soldiers = new Dictionary<Exiled.API.Features.Player, string>();
-        public static EventHadlers _event;
+        public static Dictionary<Exiled.API.Features.Player, string> Soldiers { get; set; } = new();
+        public static EventHadlers Events { get; private set; }
 
-        public static Dictionary<string, Unit> Configs = new Dictionary<string, Unit>();
-        public static HashSet<Unit> Chance = new HashSet<Unit>();
-        public static Dictionary<Unit, int> Tickets = new Dictionary<Unit, int>();
+        public static Dictionary<string, Unit> Configs { get; set; } = new();
+        public static HashSet<Unit> Chance { get; set; } = new();
+        public static Dictionary<Unit, int> Tickets { get; set; } = new ();
 
 
         public static void LoadUnitConfig()
@@ -164,7 +164,7 @@ namespace CustomUnit
                 {
                     if (!Options.Events.ContainsValue(eventType))
                     {
-                        Log.Error($"Unit {el.UnitName} param 'events' contains wrong/not supported events. Check readme on github or contact developer.");
+                        Log.Error($"Unit {el.UnitName} param 'events' contains wrong/not supported events Skipping...\nCheck readme on github or contact developer for more information.");
                         leave = true;
                         break;
                     }
