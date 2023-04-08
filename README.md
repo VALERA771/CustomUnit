@@ -98,8 +98,18 @@ Allows you to create own custom team
 - ClassD
 - Scientists
 - FoundationForces
-- ChaosInsurgensy
+- ChaosInsurgency
 - OtherAlive (tutorals)
+
+### events (Keys for events)
+- PlayerDying
+- GeneratorActivated
+- WarheadStart
+- PlayerDamage
+- PlayerEscape
+- TeamRespawn
+- WarheadStop
+- WarheadDetonation
 
 
 # Commands and perms
