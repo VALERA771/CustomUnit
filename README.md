@@ -118,3 +118,8 @@ Allows you to create own custom team
 |-----|--------|
 |reload|cu.reload|
 |spawn|cu.spawn|
+
+# Issues
+If you have an issue you can open a bug report on github or contact me at EXILED discord.
+
+**If you have a deserialization issue check that your file is same as ExampleUnit.yml template. This is also can be!**
