@@ -1,7 +1,9 @@
 ﻿using PluginAPI.Enums;
 using System;
 using System.Collections.Generic;
+using Exiled.Events.EventArgs.Map;
 using Exiled.Events.EventArgs.Player;
+using Exiled.Events.EventArgs.Scp914;
 using Exiled.Events.EventArgs.Server;
 using Exiled.Events.EventArgs.Warhead;
 
@@ -18,23 +20,24 @@ namespace CustomUnit.EventOptions
             [typeof(EscapingEventArgs)] = ServerEventType.PlayerEscape,
             [typeof(RespawningTeamEventArgs)] = ServerEventType.TeamRespawn,
             [typeof(StoppingEventArgs)] = ServerEventType.WarheadStop,
-            [typeof(DetonatingEventArgs)] = ServerEventType.WarheadDetonation
+            [typeof(DetonatingEventArgs)] = ServerEventType.WarheadDetonation,
+            [typeof(SpawningRagdollEventArgs)] = ServerEventType.RagdollSpawn,
+            [typeof(AnnouncingScpTerminationEventArgs)] = ServerEventType.CassieAnnouncesScpTermination,
+            [typeof(DecontaminatingEventArgs)] = ServerEventType.LczDecontaminationStart,
+            [typeof(PlacingBloodEventArgs)] = ServerEventType.PlaceBlood,
+            [typeof(ChangingRoleEventArgs)] = ServerEventType.PlayerChangeRole,
+            [typeof(UpgradingInventoryItemEventArgs)] = ServerEventType.Scp914UpgradeInventory
         };
 
-        /*private static Dictionary<ServerEventType, IOption<T>> opts = new();
-        public static Dictionary<ServerEventType, IOption<T>> List => opts;
+        public interface IOption<T>
+        {
+            public ServerEventType EventType { get; }
 
-        public Options(ServerEventType eventType, IOption<T> option) => opts.Add(eventType, option);*/
-    }
+            public bool IsEnabled { get; set; }
+            public int Chance { get; set; }
 
-    public interface IOption<T>
-    {
-        public ServerEventType EventType { get; }
-
-        public bool IsEnabled { get; set; }
-        public int Chance { get; set; }
-
-        public List<T> Allow { get; set; }
-        public List<T> Disallow { get; set; }
+            public HashSet<T> Allow { get; set; }
+            public HashSet<T> Disallow { get; set; }
+        }
     }
 }

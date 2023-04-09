@@ -10,7 +10,7 @@ using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-using Map = Exiled.Events.Handlers.Server;
+using Map = Exiled.Events.Handlers.Map;
 using Player = Exiled.Events.Handlers.Player;
 using Server = Exiled.Events.Handlers.Server;
 using Version = System.Version;
@@ -85,7 +85,12 @@ namespace CustomUnit
             Player.ActivatingGenerator += Methods.AddChance;
             Player.Escaping += Methods.AddChance;
             Player.Shot += Events.OnShooting;
-            Map.RespawningTeam += Events.OnTeamChoose;
+            Server.RespawningTeam += Events.OnTeamChoose;
+            Player.SpawningRagdoll += Methods.AddChance;
+            Map.Decontaminating += Methods.AddChance;
+            Map.PlacingBlood += Methods.AddChance;
+            Player.ChangingRole += Methods.AddChance;
+            Exiled.Events.Handlers.Scp914.UpgradingInventoryItem += Methods.AddChance;
         }
 
         public void UnregisterEvents()
@@ -97,7 +102,12 @@ namespace CustomUnit
             Player.ActivatingGenerator -= Methods.AddChance;
             Player.Escaping -= Methods.AddChance;
             Player.Shot -= Events.OnShooting;
-            Map.RespawningTeam -= Events.OnTeamChoose;
+            Server.RespawningTeam -= Events.OnTeamChoose;
+            Player.SpawningRagdoll -= Methods.AddChance;
+            Map.Decontaminating -= Methods.AddChance;
+            Map.PlacingBlood -= Methods.AddChance;
+            Player.ChangingRole -= Methods.AddChance;
+            Exiled.Events.Handlers.Scp914.UpgradingInventoryItem -= Methods.AddChance;
         }
 
         public Plugin()

@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
-using System;
-using System.Linq;
-using CustomUnit.EventOptions;
+﻿using CustomUnit.EventOptions;
 using Exiled.Events.EventArgs.Interfaces;
+using GameCore;
 using HarmonyLib;
+using NorthwoodLib.Pools;
 using PlayerRoles;
 using PluginAPI.Enums;
 using PluginAPI.Events;
 using Respawning;
 using Respawning.NamingRules;
-using NorthwoodLib.Pools;
-using GameCore;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 using static Respawning.RespawnManager;
 
@@ -21,8 +21,48 @@ public abstract class Methods
 {
     public static void AddChance(IExiledEvent ev)
     {
+        if (Plugin.Instance.Config.Options.Any(x => x.Key == Options.Events[ev.GetType()]))
+        {
+            var opt = Plugin.Instance.Config.Options[Options.Events[ev.GetType()]];
+
+            if (!opt.IsEnabled)
+                return;
+
+            if (new Random().Next(0, 101) <= opt.Chance)
+                return;
+
+            if (ev is IPlayerEvent pev)
+            {
+                if (!opt.Allow.Contains(pev.Player.Role.Type) || opt.Disallow.Contains(pev.Player.Role.Type))
+                    return;
+            }
+
+            if (ev is IDeniableEvent { IsAllowed: false }) return;
+
+            if (ev is IAttackerEvent aev)
+            {
+                if (!opt.Allow.Contains(aev.Player.Role.Type) || opt.Disallow.Contains(aev.Player.Role.Type))
+                    return;
+            }
+        }
+
         foreach (var unit in Plugin.Tickets.Where(unit => unit.Key.Events.ContainsKey(Options.Events[ev.GetType()])))
+        {
             Plugin.Tickets[unit.Key] += unit.Key.Events[Options.Events[ev.GetType()]];
+        }
+    }
+
+    public static void AddChance(IPlayerEvent ev)
+    {
+        if (Plugin.Instance.Config.Options.Any(x => x.Key == Options.Events[ev.GetType()]))
+        {
+            var opt = Plugin.Instance.Config.Options[Options.Events[ev.GetType()]];
+
+            if (!opt.Allow.Contains(ev.Player.Role.Type) || opt.Disallow.Contains(ev.Player.Role.Type))
+                return;
+        }
+
+        AddChance((IExiledEvent)ev);
     }
 
     public static void SpawnDefault(SpawnableTeamType team, List<ReferenceHub> list)
@@ -39,13 +79,13 @@ public abstract class Methods
         if (!EventManager.ExecuteEvent(ServerEventType.TeamRespawn, team))
         {
             RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.UponRespawn, team);
-            team = SpawnableTeamType.None;
+            AccessTools.Field(typeof(RespawnManager), nameof(RespawnManager.NextKnownTeam)).SetValue(Singleton, SpawnableTeamType.None);
             return;
         }
 
-        if ((bool)AccessTools.Field(typeof(RespawnManager), nameof(RespawnManager._prioritySpawn)).GetValue(new bool()))
+        if ((bool)AccessTools.Field(typeof(RespawnManager), nameof(RespawnManager._prioritySpawn)).GetValue(Singleton))
         {
-            list = list.OrderByDescending((ReferenceHub item) => item.roleManager.CurrentRole.ActiveTime).ToList();
+            list = list.OrderByDescending(item => item.roleManager.CurrentRole.ActiveTime).ToList();
         }
         else
         {
