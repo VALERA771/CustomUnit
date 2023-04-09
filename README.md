@@ -110,6 +110,12 @@ Allows you to create own custom team
 - TeamRespawn
 - WarheadStop
 - WarheadDetonation
+- ServerEventType.RagdollSpawn
+- CassieAnnouncesScpTermination
+- LczDecontaminationStart
+- PlaceBlood
+- PlayerChangeRole
+- Scp914UpgradeInventory
 
 
 # Commands and perms
