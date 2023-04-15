@@ -91,6 +91,7 @@ namespace CustomUnit
             Map.PlacingBlood += Methods.AddChance;
             Player.ChangingRole += Methods.AddChance;
             Exiled.Events.Handlers.Scp914.UpgradingInventoryItem += Methods.AddChance;
+            Player.DamagingShootingTarget += Methods.AddChance;
         }
 
         public void UnregisterEvents()
@@ -108,6 +109,7 @@ namespace CustomUnit
             Map.PlacingBlood -= Methods.AddChance;
             Player.ChangingRole -= Methods.AddChance;
             Exiled.Events.Handlers.Scp914.UpgradingInventoryItem -= Methods.AddChance;
+            Player.DamagingShootingTarget -= Methods.AddChance;
         }
 
         public Plugin()
@@ -120,6 +122,8 @@ namespace CustomUnit
         public static Dictionary<string, Unit> Configs { get; set; } = new();
         public static HashSet<Unit> Chance { get; set; } = new();
         public static Dictionary<Unit, int> Tickets { get; set; } = new ();
+
+        public RoundSummary.LeadingTeam Team = RoundSummary.LeadingTeam.Draw;
 
 
         public static void LoadUnitConfig()

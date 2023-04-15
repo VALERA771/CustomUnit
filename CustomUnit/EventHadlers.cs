@@ -37,18 +37,10 @@ namespace CustomUnit
         {
             if (Plugin.Soldiers.TryGetValue(ev.Player, out string name))
             {
-                if (Plugin.Soldiers.TryGetValue(ev.Target, out string atname))
+                if (Plugin.Soldiers.TryGetValue(ev.Target, out string atname) && name == atname)
                 {
-                    if (name == atname)
-                    {
-                        ev.CanHurt = false;
-                        return;
-                    }
-                    else
-                    {
-                        ev.CanHurt = true;
-                        return;
-                    }
+                    ev.CanHurt = false;
+                    return;
                 }
 
                 if (Plugin.Configs[name].AllowToDamage.Contains(ev.Target.Role.Team))
@@ -57,10 +49,8 @@ namespace CustomUnit
             else if (Plugin.Soldiers.TryGetValue(ev.Target, out string name1))
             {
                 if (Plugin.Configs[name1].AllowToDamage.Contains(ev.Player.Role.Team))
-                    ev.CanHurt = true; return;
+                    ev.CanHurt = true;
             }
-
-            Methods.AddChance(ev);
         }
 
         public void OnDied(DiedEventArgs ev)
@@ -118,12 +108,23 @@ namespace CustomUnit
         {
             foreach (Player player in players)
             {
-                SpawnLocation loc = team == SpawnableTeamType.NineTailedFox ? PlayerRoles.RoleTypeId.NtfCaptain.GetRandomSpawnLocation() : PlayerRoles.RoleTypeId.ChaosConscript.GetRandomSpawnLocation();
+                var pos = team == SpawnableTeamType.NineTailedFox
+                    ? PlayerRoles.RoleTypeId.NtfCaptain.GetRandomSpawnLocation().Position
+                    : PlayerRoles.RoleTypeId.ChaosConscript.GetRandomSpawnLocation().Position;
 
-                if (loc == null)
-                    throw new NullReferenceException("SpawnLocation null");
+                if (un.StaticSpawnPoints.Count != 0)
+                {
+                    var point = un.StaticSpawnPoints.RandomItem();
+                    if (new Random().Next(101) >= point.Chance)
+                        pos = point.Position;
+                }
 
-                Vector3 pos = loc.Position;
+                if (un.DynamicSpawnPoints.Count != 0)
+                {
+                    var point = un.DynamicSpawnPoints.RandomItem();
+                    if (new Random().Next(101) >= point.Chance)
+                        pos = point.Position;
+                }
 
                 player.Role.Set(un.Roles.ToList().RandomItem(), SpawnReason.Respawn);
                 player.Position = pos;
@@ -136,7 +137,7 @@ namespace CustomUnit
                 foreach (KeyValuePair<AmmoType, ushort> ammo in un.Ammos)
                     player.AddAmmo(ammo.Key, ammo.Value);
 
-                player.CustomInfo = un.UnitName + " solder";
+                player.CustomInfo = un.UnitName + " soldier";
                 player.InfoArea = PlayerInfoArea.Nickname & PlayerInfoArea.CustomInfo & PlayerInfoArea.Badge;
 
                 Plugin.Soldiers.Add(player, un.UnitName);

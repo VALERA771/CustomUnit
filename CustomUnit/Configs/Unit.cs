@@ -4,6 +4,7 @@ using PluginAPI.Enums;
 using Respawning;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Exiled.API.Features.Spawn;
 
 namespace CustomUnit.Configs
 {
@@ -26,6 +27,26 @@ namespace CustomUnit.Configs
         {
             RoleTypeId.Tutorial,
             RoleTypeId.Scp939
+        };
+
+        [Description("List of static spawn points (Depends on coordinates). Leave null to use \"team\" spawnpoint")]
+        public List<DynamicSpawnPoint> DynamicSpawnPoints { get; set; } = new()
+        {
+            new()
+            {
+                Chance = 100,
+                Location = SpawnLocationType.Inside914,
+            }
+        };
+
+        [Description("List of static spawn points (Depends on coordinates). Leave null to use \"team\" spawnpoint")]
+        public List<StaticSpawnPoint> StaticSpawnPoints { get; set; } = new()
+        {
+            new()
+            {
+                Chance = 100,
+                Position = new(1f, 1f, 1f)
+            }
         };
 
         [Description(

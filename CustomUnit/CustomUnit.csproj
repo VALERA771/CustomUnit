@@ -58,14 +58,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\List.cs" />
     <Compile Include="Commands\Reload.cs" />
     <Compile Include="Commands\Spawn.cs" />
+    <Compile Include="Commands\Tickets.cs" />
     <Compile Include="Configs\Plugin.cs" />
     <Compile Include="Configs\Unit.cs" />
     <Compile Include="EventHadlers.cs" />
     <Compile Include="EventOptions\Options.cs" />
     <Compile Include="EventOptions\PlayerOptions.cs" />
     <Compile Include="EventOptions\RoleOptions.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Methods.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
