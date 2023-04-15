@@ -1,0 +1,40 @@
+# Uses chance system. If "false" will use ticket system
+use_chance: true
+# Unit name
+unit_name: UnitName
+# Chance. From 1 to 100
+spawn_chance: 10
+# Spawn team
+team: ChaosInsurgency
+# Roles. Picks up a random role for each player in unit
+roles:
+- Tutorial
+- Scp939
+# Should players on spawn have their default inventories? (If "false" items from inventory will be just added otherwise they'll replace defualt items
+override_inventory: true
+# Inventory item
+inventory:
+- Medkit
+- KeycardChaosInsurgency
+- GunE11SR
+# Inventory Ammo
+ammos:
+  Nato556: 100
+  Nato9: 50
+# CASSIE announchement. Replaces %name% with unit_name
+cassie_text: '%name% has arrived!'
+# Should CASSIE message have subtiteles?
+subtiteled: true
+# Teams that unit can damage
+allow_to_damage:
+- SCPs
+# Events to add tickets
+events:
+  WarheadDetonation: -1
+  PlayerDying: 1
+# Tickets to remove if team spawns (Also this value will be removed if remove_ticket_on_other is true)
+tickets_to_remove: 30
+# Should tickets be removed if other team spawned?
+remove_ticket_on_other: true
+# Amount of ticket which team will have on start of the round
+start_ticket: 0
