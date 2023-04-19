@@ -5,6 +5,7 @@ using Respawning;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Exiled.API.Features.Spawn;
+using YamlDotNet.Serialization;
 
 namespace CustomUnit.Configs
 {
@@ -95,5 +96,7 @@ namespace CustomUnit.Configs
 
         [Description("Amount of ticket which team will have on start of the round")]
         public int StartTicket { get; set; } = 0;
+
+        public override string ToString() => $"Name={UnitName} Team={Team}";
     }
 }

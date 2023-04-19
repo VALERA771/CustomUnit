@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Text;
 using CommandSystem;
-using Exiled.Permissions.Extensions;
 
 namespace CustomUnit.Commands;
 
+[CommandHandler(typeof(RemoteAdminCommandHandler))]
 public class List : ICommand
 {
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
@@ -21,7 +21,7 @@ public class List : ICommand
         return true;
     }
 
-    public string Command { get; }
-    public string[] Aliases { get; }
-    public string Description { get; }
+    public string Command { get; } = "list_units";
+    public string[] Aliases { get; } = { "lu" };
+    public string Description { get; } = "Shows a list with all loaded units";
 }
