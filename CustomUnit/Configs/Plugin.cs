@@ -1,11 +1,11 @@
-﻿using Exiled.API.Features;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using Exiled.API.Features;
 using Exiled.API.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CustomUnit.EventOptions;
+using PlayerRoles;
+using PluginAPI.Enums;
 
 namespace CustomUnit.Configs
 {
@@ -14,6 +14,27 @@ namespace CustomUnit.Configs
         public bool IsEnabled { get; set; } = true;
         public bool Debug { get; set; } = false;
 
+        [Description("Path ti folder with units")]
         public string UnitPath { get; set; } = Path.Combine(Paths.Exiled, "Units");
+
+        [Description("Options for events. You can set only 1 option per event")]
+        public Dictionary<ServerEventType, RoleOptions> Options { get; set; } = new()
+        {
+            [ServerEventType.PlayerDying] = new(ServerEventType.PlayerDying)
+            {
+                Allow = new()
+                {
+                    RoleTypeId.ChaosConscript,
+                    RoleTypeId.ClassD
+                },
+                Chance = 100,
+                Disallow = new()
+                {
+                    RoleTypeId.FacilityGuard,
+                    RoleTypeId.NtfPrivate
+                },
+                IsEnabled = true
+            }
+        };
     }
 }

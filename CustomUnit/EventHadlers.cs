@@ -1,4 +1,5 @@
-﻿using CustomUnit.Configs;
+﻿using System;
+using CustomUnit.Configs;
 using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
@@ -19,25 +20,27 @@ namespace CustomUnit
     {
         public void OnTeamChoose(RespawningTeamEventArgs ev)
         {
-            if (!SpawnChance(ev.NextKnownTeam, ev.Players)) SpawnTicket(ev.NextKnownTeam, ev.Players);
+            if (!SpawnChance(ev.NextKnownTeam, ev.Players))
+            {
+                ev.IsAllowed = !SpawnTicket(ev.NextKnownTeam, ev.Players);
+            }
+            else
+                ev.IsAllowed = false;
+
+            Methods.AddChance(ev);
+
+            foreach (var unit in Plugin.Tickets.Keys.Where(x => x.RemoveTicketOnOther))
+                Plugin.Tickets[unit] -= unit.TicketsToRemove;
         }
 
         public void OnShooting(ShotEventArgs ev)
         {
             if (Plugin.Soldiers.TryGetValue(ev.Player, out string name))
             {
-                if (Plugin.Soldiers.TryGetValue(ev.Target, out string atname))
+                if (Plugin.Soldiers.TryGetValue(ev.Target, out string atname) && name == atname)
                 {
-                    if (name == atname)
-                    {
-                        ev.CanHurt = false;
-                        return;
-                    }
-                    else
-                    {
-                        ev.CanHurt = true;
-                        return;
-                    }
+                    ev.CanHurt = false;
+                    return;
                 }
 
                 if (Plugin.Configs[name].AllowToDamage.Contains(ev.Target.Role.Team))
@@ -46,7 +49,7 @@ namespace CustomUnit
             else if (Plugin.Soldiers.TryGetValue(ev.Target, out string name1))
             {
                 if (Plugin.Configs[name1].AllowToDamage.Contains(ev.Player.Role.Team))
-                    ev.CanHurt = true; return;
+                    ev.CanHurt = true;
             }
         }
 
@@ -54,19 +57,18 @@ namespace CustomUnit
         {
             if (Plugin.Soldiers.Keys.Contains(ev.Player))
                 Plugin.Soldiers.Remove(ev.Player);
+
+            Methods.AddChance(ev);
         }
 
-        public static bool SpawnChance(SpawnableTeamType team, List<Player> players)
+        private static bool SpawnChance(SpawnableTeamType team, List<Player> players)
         {
-            Random rn = new Random();
+            Random rn = new();
 
-            foreach (var un in Plugin.Chance)
+            foreach (var un in Plugin.Chance.Where(x => x.Team == team))
             {
-                if (un.SpawnChance > rn.Next(101))
+                if (un.SpawnChance < rn.Next(101))
                 {
-                    if (un.Team != team)
-                        continue;
-
                     Timing.CallDelayed(0.5f, () =>
                     {
                         Spawn(un, players, team);
@@ -79,7 +81,7 @@ namespace CustomUnit
             return false;
         }
 
-        public static bool SpawnTicket(SpawnableTeamType team, List<Player> players)
+        private static bool SpawnTicket(SpawnableTeamType team, List<Player> players)
         {
             int tick = 0;
             if (team == SpawnableTeamType.ChaosInsurgency) tick = (int)Respawn.ChaosTickets;
@@ -93,6 +95,7 @@ namespace CustomUnit
                 Timing.CallDelayed(0.5f, () =>
                 {
                     Spawn(conf.Key, players, team);
+                    Plugin.Tickets[conf.Key] -= conf.Key.TicketsToRemove;
                 });
 
                 return true;
@@ -101,30 +104,46 @@ namespace CustomUnit
             return false;
         }
 
-        private static void Spawn(Unit un, List<Player> players, SpawnableTeamType team)
+        public static void Spawn(Unit un, List<Player> players, SpawnableTeamType team)
         {
             foreach (Player player in players)
             {
-                SpawnLocation loc;
-                if (team == SpawnableTeamType.NineTailedFox) loc = PlayerRoles.RoleTypeId.NtfCaptain.GetRandomSpawnLocation();
-                else loc = PlayerRoles.RoleTypeId.ChaosConscript.GetRandomSpawnLocation();
+                var pos = team == SpawnableTeamType.NineTailedFox
+                    ? PlayerRoles.RoleTypeId.NtfCaptain.GetRandomSpawnLocation().Position
+                    : PlayerRoles.RoleTypeId.ChaosConscript.GetRandomSpawnLocation().Position;
 
-                Vector3 pos = loc.Position;
+                if (un.StaticSpawnPoints.Count != 0)
+                {
+                    var point = un.StaticSpawnPoints.RandomItem();
+                    if (new Random().Next(101) >= point.Chance)
+                        pos = point.Position;
+                }
+
+                if (un.DynamicSpawnPoints.Count != 0)
+                {
+                    var point = un.DynamicSpawnPoints.RandomItem();
+                    if (new Random().Next(101) >= point.Chance)
+                        pos = point.Position;
+                }
 
                 player.Role.Set(un.Roles.ToList().RandomItem(), SpawnReason.Respawn);
                 player.Position = pos;
-                player.ClearInventory();
+
+                if (un.OverrideInventory)
+                    player.ClearInventory();
+
                 foreach (ItemType item in un.Inventory)
                     player.AddItem(item);
                 foreach (KeyValuePair<AmmoType, ushort> ammo in un.Ammos)
                     player.AddAmmo(ammo.Key, ammo.Value);
-                player.CustomInfo = un.UnitName + " solder";
+
+                player.CustomInfo = un.UnitName + " soldier";
                 player.InfoArea = PlayerInfoArea.Nickname & PlayerInfoArea.CustomInfo & PlayerInfoArea.Badge;
 
                 Plugin.Soldiers.Add(player, un.UnitName);
             }
 
-            Cassie.Message(un.CassieText.Replace("%name%", un.UnitName), isSubtitles: true);
+            Cassie.Message(un.CassieText.Replace("%name%", un.UnitName), isSubtitles: un.Subtiteled);
         }
     }
 }

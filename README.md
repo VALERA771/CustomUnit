@@ -3,6 +3,14 @@
 # CustomTeam
 Allows you to create own custom team
 
+# Issues
+If you have an issue you can open a bug report on github or contact me at EXILED discord.
+
+**If you have a deserialization issue check that your file is same as ExampleUnit.yml template. This is also can be!**
+
+# Templates
+You can use template if you want to reset your config. Also in templates present more information so you can better understand which value responcible for
+
 # Accpeptable config values
 
 ### team
@@ -98,8 +106,24 @@ Allows you to create own custom team
 - ClassD
 - Scientists
 - FoundationForces
-- ChaosInsurgensy
+- ChaosInsurgency
 - OtherAlive (tutorals)
+
+### events (Keys for events)
+- PlayerDying
+- GeneratorActivated
+- WarheadStart
+- PlayerDamage
+- PlayerEscape
+- TeamRespawn
+- WarheadStop
+- WarheadDetonation
+- ServerEventType.RagdollSpawn
+- CassieAnnouncesScpTermination
+- LczDecontaminationStart
+- PlaceBlood
+- PlayerChangeRole
+- Scp914UpgradeInventory
 
 
 # Commands and perms
