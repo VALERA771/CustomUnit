@@ -30,7 +30,7 @@ namespace CustomUnit.Configs
             RoleTypeId.Scp939
         };
 
-        [Description("List of static spawn points (Depends on coordinates). Leave null to use \"team\" spawnpoint")]
+        [Description("List of static spawn points (Depends on rooms). Leave null to use \"team\" spawnpoint")]
         public List<DynamicSpawnPoint> DynamicSpawnPoints { get; set; } = new()
         {
             new()
@@ -41,17 +41,10 @@ namespace CustomUnit.Configs
         };
 
         [Description("List of static spawn points (Depends on coordinates). Leave null to use \"team\" spawnpoint")]
-        public List<StaticSpawnPoint> StaticSpawnPoints { get; set; } = new()
-        {
-            new()
-            {
-                Chance = 100,
-                Position = new(1f, 1f, 1f)
-            }
-        };
+        public List<StaticSpawnPoint> StaticSpawnPoints { get; set; } = new();
 
         [Description(
-            "Should players on spawn have their default inventories? (If \"false\" items from inventory will be just added otherwise they'll replace defualt items")]
+            "Should players on spawn have their default inventories? (If \"false\" items from inventory will be just added otherwise they'll replace defualt items)")]
         public bool OverrideInventory { get; set; } = true;
 
         [Description("Inventory item")]
