@@ -125,6 +125,34 @@ You can use template if you want to reset your config. Also in templates present
 - PlayerChangeRole
 - Scp914UpgradeInventory
 
+### dynamic_spawn_points -> location
+- Inside049Armory
+- Inside079Secondary
+- Inside096
+- Inside173Armory
+- Inside173Bottom
+- Inside173Connector
+- InsideEscapePrimary
+- InsideEscapeSecondary
+- InsideIntercom
+- InsideLczArmory
+- InsideLczCafe
+- InsideNukeArmory
+- InsideSurfaceNuke
+- Inside079First
+- Inside173Gate
+- Inside914
+- InsideGateA
+- InsideGateB
+- InsideGr18
+- InsideHczArmory
+- InsideHid
+- InsideHidLeft
+- InsideHidRight
+- InsideLczWc
+- InsideServersBottom
+- InsideLocke
+
 
 # Commands and perms
 
