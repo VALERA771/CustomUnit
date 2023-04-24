@@ -10,7 +10,7 @@ namespace CustomUnit.EventOptions
         }
 
         public bool IsEnabled { get; set; } = true;
-        public int Chance { get; set; } = 1;
+        public int Chance { get; set; } = 100;
 
         public HashSet<RoleTypeId> Allow { get; set; } = new();
         public HashSet<RoleTypeId> Disallow { get; set; } = new();

@@ -28,7 +28,9 @@ namespace CustomUnit
 
             Methods.AddChance(ev);
 
-            foreach (var unit in Plugin.Tickets.Keys.Where(x => x.RemoveTicketOnOther && x != _lastSpawned))
+            var x = Plugin.Tickets.Keys.Where(x => x.RemoveTicketOnOther && x != _lastSpawned);
+            
+            foreach (var unit in x)
                 Plugin.Tickets[unit] -= unit.TicketsToRemove;
         }
 
