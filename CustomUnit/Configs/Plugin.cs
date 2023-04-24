@@ -14,13 +14,13 @@ namespace CustomUnit.Configs
         public bool IsEnabled { get; set; } = true;
         public bool Debug { get; set; } = false;
 
-        [Description("Path ti folder with units")]
+        [Description("Path to folder with units")]
         public string UnitPath { get; set; } = Path.Combine(Paths.Exiled, "Units");
 
         [Description("Options for events. You can set only 1 option per event")]
         public Dictionary<ServerEventType, RoleOptions> Options { get; set; } = new()
         {
-            [ServerEventType.PlayerDying] = new(ServerEventType.PlayerDying)
+            [ServerEventType.PlayerDying] = new()
             {
                 Allow = new()
                 {

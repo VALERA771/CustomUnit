@@ -8,7 +8,6 @@ using CustomUnit.EventOptions;
 using Exiled.Loader;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
 
 using Map = Exiled.Events.Handlers.Map;
 using Player = Exiled.Events.Handlers.Player;
@@ -42,14 +41,13 @@ namespace CustomUnit
             if (!Directory.Exists(Config.UnitPath))
             {
                 Directory.CreateDirectory(Instance.Config.UnitPath);
-                Log.Info("Created directory for plugin");
+                Log.Debug("Created directory for plugin");
             }
 
             Events = new EventHadlers();
             RegisterEvents();
 
             Serializer = Loader.Serializer;
-
             Deserializer = Loader.Deserializer;
 
             LoadUnitConfig();
@@ -131,9 +129,9 @@ namespace CustomUnit
             if (!File.Exists(ExampleUnit))
                 File.WriteAllText(ExampleUnit, Serializer.Serialize(UnitConfig));
 
+            int i = 0;
             foreach (var file in Directory.GetFiles(Instance.Config.UnitPath))
             {
-                int i = 0;
                 try
                 {
                     var conf = Deserializer.Deserialize<Unit>(File.ReadAllText(file));
@@ -145,6 +143,8 @@ namespace CustomUnit
                         Configs.Add($"UnitName{i}", Deserializer.Deserialize<Unit>(File.ReadAllText(file)));
                         i++;
                     }
+
+                    Log.Debug($"Registered {Configs.Values.Last().UnitName} unit");
                 }
                 catch (YamlException ex)
                 {
@@ -159,6 +159,8 @@ namespace CustomUnit
             }
 
             Chance = Configs.Values.ToHashSet();
+            
+            Log.Info($"Successfully registered {Configs.Count} units");
 
             Chance = Configs.Values.Where(x => x.UseChance).ToHashSet();
             var tmp = Configs.Values.Where(x => !x.UseChance).ToList();
@@ -170,16 +172,16 @@ namespace CustomUnit
                 {
                     if (!Options.Events.ContainsValue(eventType))
                     {
-                        Log.Error($"Unit {el.UnitName} param 'events' contains wrong/not supported events Skipping...\nCheck readme on github or contact developer for more information.");
+                        Log.Error($"Unit {el.UnitName} param 'events' contains wrong/not supported events. Switching to chance system...\nCheck readme on github or contact developer for more information.");
+                        el.UseChance = true;
+                        Chance.Add(el);
                         leave = true;
                         break;
                     }
                 }
 
-                if (leave)
-                    continue;
-
-                Tickets.Add(el, el.StartTicket);
+                if (!leave)
+                    Tickets.Add(el, el.StartTicket);
             }
         }
     }

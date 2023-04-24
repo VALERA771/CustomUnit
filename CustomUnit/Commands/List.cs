@@ -9,7 +9,7 @@ public class List : ICommand
 {
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {
-        if (!sender.CheckPermissions("cu.list", out response))
+        if (!sender.CheckPermission("cu.list", out response))
             return false;
 
         StringBuilder sb = new();

@@ -1,24 +1,16 @@
 ﻿using PlayerRoles;
-using PluginAPI.Enums;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CustomUnit.EventOptions
 {
-    public struct RoleOptions : Options.IOption<RoleTypeId>
+    public struct RoleOptions
     {
-        public RoleOptions(ServerEventType type)
+        public RoleOptions()
         {
-            EventType = type;
         }
 
         public bool IsEnabled { get; set; } = true;
-        public int Chance { get; set; } = 1;
-
-        public ServerEventType EventType { get; }
+        public int Chance { get; set; } = 100;
 
         public HashSet<RoleTypeId> Allow { get; set; } = new();
         public HashSet<RoleTypeId> Disallow { get; set; } = new();

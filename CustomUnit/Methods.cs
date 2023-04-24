@@ -12,13 +12,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Exiled.API.Features;
-using MEC;
 using static Respawning.RespawnManager;
 
 namespace CustomUnit;
 
-public abstract class Methods
+public static class Methods
 {
     public static void AddChance(IExiledEvent ev)
     {
@@ -51,19 +49,6 @@ public abstract class Methods
         {
             Plugin.Tickets[unit.Key] += unit.Key.Events[Options.Events[ev.GetType()]];
         }
-    }
-
-    public static void AddChance(IPlayerEvent ev)
-    {
-        if (Plugin.Instance.Config.Options.Any(x => x.Key == Options.Events[ev.GetType()]))
-        {
-            var opt = Plugin.Instance.Config.Options[Options.Events[ev.GetType()]];
-
-            if (!opt.Allow.Contains(ev.Player.Role.Type) || opt.Disallow.Contains(ev.Player.Role.Type))
-                return;
-        }
-
-        AddChance((IExiledEvent)ev);
     }
 
     public static void SpawnDefault(SpawnableTeamType team, List<ReferenceHub> list)

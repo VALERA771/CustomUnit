@@ -1,5 +1,4 @@
 ﻿using CommandSystem;
-using Exiled.Permissions.Extensions;
 using System;
 
 namespace CustomUnit.Commands
@@ -15,11 +14,8 @@ namespace CustomUnit.Commands
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            if (!sender.CheckPermission("cu.reload"))
-            {
-                response = "You don't have permission to execute this command";
+            if (!sender.CheckPermission("cu.reload", out response))
                 return false;
-            }
 
             try
             {

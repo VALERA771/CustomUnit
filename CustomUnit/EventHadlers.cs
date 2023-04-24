@@ -1,16 +1,13 @@
-﻿using System;
-using CustomUnit.Configs;
+﻿using CustomUnit.Configs;
 using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
-using Exiled.API.Features.Spawn;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Events.EventArgs.Server;
 using MEC;
 using Respawning;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 using Random = System.Random;
 
@@ -18,6 +15,8 @@ namespace CustomUnit
 {
     public class EventHadlers
     {
+        private static Unit _lastSpawned;
+        
         public void OnTeamChoose(RespawningTeamEventArgs ev)
         {
             if (!SpawnChance(ev.NextKnownTeam, ev.Players))
@@ -29,7 +28,9 @@ namespace CustomUnit
 
             Methods.AddChance(ev);
 
-            foreach (var unit in Plugin.Tickets.Keys.Where(x => x.RemoveTicketOnOther))
+            var x = Plugin.Tickets.Keys.Where(x => x.RemoveTicketOnOther && x != _lastSpawned);
+            
+            foreach (var unit in x)
                 Plugin.Tickets[unit] -= unit.TicketsToRemove;
         }
 
@@ -144,6 +145,8 @@ namespace CustomUnit
             }
 
             Cassie.Message(un.CassieText.Replace("%name%", un.UnitName), isSubtitles: un.Subtiteled);
+
+            _lastSpawned = un;
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using CommandSystem;
-using Exiled.Permissions.Extensions;
 
 namespace CustomUnit.Commands;
 
@@ -9,11 +8,8 @@ public class Tickets : ICommand, IUsageProvider
 {
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {
-        if (!sender.CheckPermission("cu.tickets"))
-        {
-            response = "You don't have permissions to execute this command";
+        if (!sender.CheckPermission("cu.tickets", out response))
             return false;
-        }
 
         if (arguments.Count != 1)
         {
