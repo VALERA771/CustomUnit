@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CustomUnit.EventOptions
 {
-    public struct RoleOptions : Options.IOption<RoleTypeId>
+    public struct RoleOptions
     {
         public RoleOptions()
         {

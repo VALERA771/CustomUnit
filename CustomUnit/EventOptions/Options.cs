@@ -28,14 +28,5 @@ namespace CustomUnit.EventOptions
             [typeof(ChangingRoleEventArgs)] = ServerEventType.PlayerChangeRole,
             [typeof(UpgradingInventoryItemEventArgs)] = ServerEventType.Scp914UpgradeInventory
         };
-
-        public interface IOption<T>
-        {
-            public bool IsEnabled { get; set; }
-            public int Chance { get; set; }
-
-            public HashSet<T> Allow { get; set; }
-            public HashSet<T> Disallow { get; set; }
-        }
     }
 }
