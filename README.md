@@ -151,7 +151,7 @@ You can use template if you want to reset your config. Also in templates present
 - InsideHidRight
 - InsideLczWc
 - InsideServersBottom
-- InsideLocke
+- InsideLocker
 
 
 # Commands and perms
