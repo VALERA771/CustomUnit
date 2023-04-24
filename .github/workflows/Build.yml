@@ -9,11 +9,10 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-lastest
     
     env:
-      REFERENCES_PATH: D:\a\References
-      REFERENCES_URL: https://exiled.host/build_deps/Dev.zip
+      REFERENCES_PATH: ${{ github.workspace }}\References
 
     steps:
     - name: Checkout
@@ -28,7 +27,7 @@ jobs:
     - name: Get references
       shell: pwsh
       run: |
-        Invoke-WebRequest -Uri ${{ env.REFERENCES_URL }} -OutFile ${{ github.workspace }}/References.zip
+        Invoke-WebRequest -Uri https://exiled.host/build_deps/Dev.zip -OutFile ${{ github.workspace }}\References.zip
         Expand-Archive -Path References.zip -DestinationPath ${{ env.REFERENCES_PATH }}
       
     - name: Build
