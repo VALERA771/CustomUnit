@@ -10,6 +10,18 @@ team: ChaosInsurgency
 roles:
 - Tutorial
 - Scp939
+# List of static spawn points (Depends on coordinates). Leave null to use "team" spawnpoint
+dynamic_spawn_points:
+- location: Inside173Gate
+  chance: 100
+# List of static spawn points (Depends on coordinates). Leave null to use "team" spawnpoint
+static_spawn_points:
+- name: 
+  chance: 100
+  position:
+    x: 1
+    y: 1
+    z: 1
 # Should players on spawn have their default inventories? (If "false" items from inventory will be just added otherwise they'll replace defualt items
 override_inventory: true
 # Inventory item
