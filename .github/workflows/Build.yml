@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-lastest
+    runs-on: windows-lastest
     
     env:
       REFERENCES_PATH: ${{ github.workspace }}\References
