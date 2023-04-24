@@ -1,4 +1,4 @@
-![Github All Downloads](https://img.shields.io/github/downloads/VALERA771/CustomTeam/total.svg?style=flat)
+![Github All Downloads](https://img.shields.io/github/downloads/VALERA771/CustomTeam/total.svg?style=for-the-badge)
 
 # CustomTeam
 Allows you to create own custom team
@@ -160,3 +160,5 @@ You can use template if you want to reset your config. Also in templates present
 |-----|--------|
 |reload|cu.reload|
 |spawn|cu.spawn|
+|list|cu.list|
+|tickets|cu.tickets|
