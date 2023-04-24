@@ -26,7 +26,8 @@ jobs:
 
     - name: Restoring projects
       run: dotnet restore CustomUnit
-      
+    - name: Restoring projects
+      run: dotnet restore CustomUnit
     - name: Build
       env:
         EXILED_REFERENCES: ${{ env.REFERENCES_PATH }}
