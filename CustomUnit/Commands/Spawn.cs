@@ -1,6 +1,5 @@
 ﻿using CommandSystem;
 using Exiled.API.Features;
-using Exiled.Permissions.Extensions;
 using Respawning;
 using System;
 using System.Linq;
@@ -27,11 +26,9 @@ namespace CustomUnit.Commands
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            if (!sender.CheckPermission("cu.spawn"))
-            {
-                response = "You don't have permissions to execute this command";
+            if (!sender.CheckPermission("cu.spawn", out response))
                 return false;
-            }
+                
             if (arguments.Count != 2)
             {
                 response = this.DisplayCommandUsage();

@@ -66,7 +66,6 @@
     <Compile Include="Configs\Unit.cs" />
     <Compile Include="EventHadlers.cs" />
     <Compile Include="EventOptions\Options.cs" />
-    <Compile Include="EventOptions\PlayerOptions.cs" />
     <Compile Include="EventOptions\RoleOptions.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Methods.cs" />

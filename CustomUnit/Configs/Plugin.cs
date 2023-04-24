@@ -20,7 +20,7 @@ namespace CustomUnit.Configs
         [Description("Options for events. You can set only 1 option per event")]
         public Dictionary<ServerEventType, RoleOptions> Options { get; set; } = new()
         {
-            [ServerEventType.PlayerDying] = new(ServerEventType.PlayerDying)
+            [ServerEventType.PlayerDying] = new()
             {
                 Allow = new()
                 {

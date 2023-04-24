@@ -5,7 +5,7 @@ namespace CustomUnit;
 
 public static class Extensions
 {
-    public static bool CheckPermissions(this ICommandSender sender, string permission, out string response)
+    public static bool CheckPermission(this ICommandSender sender, string permission, out string response)
     {
         if (sender.CheckPermission(permission))
         {

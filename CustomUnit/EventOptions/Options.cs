@@ -31,8 +31,6 @@ namespace CustomUnit.EventOptions
 
         public interface IOption<T>
         {
-            public ServerEventType EventType { get; }
-
             public bool IsEnabled { get; set; }
             public int Chance { get; set; }
 

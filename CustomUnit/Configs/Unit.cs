@@ -5,7 +5,6 @@ using Respawning;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Exiled.API.Features.Spawn;
-using YamlDotNet.Serialization;
 
 namespace CustomUnit.Configs
 {

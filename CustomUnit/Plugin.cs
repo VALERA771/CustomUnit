@@ -48,7 +48,6 @@ namespace CustomUnit
             RegisterEvents();
 
             Serializer = Loader.Serializer;
-
             Deserializer = Loader.Deserializer;
 
             LoadUnitConfig();
@@ -145,8 +144,7 @@ namespace CustomUnit
                         i++;
                     }
 
-                    var str = conf != null ? conf.UnitName : $"UnitName{i}";
-                    Log.Debug($"Registered {str} unit");
+                    Log.Debug($"Registered {Configs.Values.Last().UnitName} unit");
                 }
                 catch (YamlException ex)
                 {
@@ -174,16 +172,16 @@ namespace CustomUnit
                 {
                     if (!Options.Events.ContainsValue(eventType))
                     {
-                        Log.Error($"Unit {el.UnitName} param 'events' contains wrong/not supported events Skipping...\nCheck readme on github or contact developer for more information.");
+                        Log.Error($"Unit {el.UnitName} param 'events' contains wrong/not supported events. Switching to chance system...\nCheck readme on github or contact developer for more information.");
+                        el.UseChance = true;
+                        Chance.Add(el);
                         leave = true;
                         break;
                     }
                 }
 
-                if (leave)
-                    continue;
-
-                Tickets.Add(el, el.StartTicket);
+                if (!leave)
+                    Tickets.Add(el, el.StartTicket);
             }
         }
     }
