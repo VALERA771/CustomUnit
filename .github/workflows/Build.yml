@@ -8,10 +8,9 @@ on:
   workflow_dispatch:
 
 jobs:
-
   build:
     runs-on: windows-latest
-
+    
     env:
       REFERENCES_PATH: D:\a\References
       REFERENCES_URL: https://exiled.host/build_deps/Dev.zip
