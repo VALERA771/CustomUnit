@@ -22,7 +22,7 @@ jobs:
 
     - name: Build
       env:
-        EXILED_REFERENCES: ${{ github.workspace }}\.github\Refs
+        EXILED_REFERENCES: D:\a\CustomUnit\CustomUnit\.github\workflows\Refs
       shell: pwsh
       run: dotnet build CustomUnit -c release
 
