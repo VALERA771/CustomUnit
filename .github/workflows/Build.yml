@@ -12,7 +12,7 @@ on:
 
 env:
   EXILED_REFERENCES_URL: https://exiled.host/build_deps/Dev.zip
-  EXILED_REFERENCES_PATH: ${{ github.workspace }}\References
+  EXILED_REFERENCES_PATH: ${{ github.workspace }}/References
 
 jobs:
 
@@ -31,13 +31,8 @@ jobs:
     - name: Get references
       shell: pwsh
       run: |
-        Invoke-WebRequest -Uri ${{ env.EXILED_REFERENCES_URL }} -OutFile ${{ github.workspace }}\References.zip
+        Invoke-WebRequest -Uri ${{ env.EXILED_REFERENCES_URL }} -OutFile ${{ github.workspace }}/References.zip
         Expand-Archive -Path References.zip -DestinationPath ${{ env.EXILED_REFERENCES_PATH }}
-        
-    - name: Setup MSBuild.exe
-      uses: microsoft/Setup-MSBuild@v1
-      env:
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
         
     - name: Restore projects
       run: dotnet restore CustomUnit
@@ -46,8 +41,7 @@ jobs:
       env:
         EXILED_REFERENCES: ${{ env.EXILED_REFERENCES_PATH }}
       shell: pwsh
-      run: |
-          msbuild CustomUnit\CustomUnit.csproj -t:rebuild -property:Configuration=Release -property:ReferencePath="${{ env.EXILED_REFERENCES_PATH }}"
+      run: dotnet build CustomUnit -c release
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
