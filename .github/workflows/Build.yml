@@ -1,0 +1,50 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - master
+      - dev
+  workflow_dispatch:
+
+env:
+  EXILED_REFERENCES_URL: https://exiled.host/build_deps/Dev.zip
+  EXILED_REFERENCES_PATH: ${{ github.workspace }}/References
+
+jobs:
+
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v1.7.2
+
+    - name: Checkout
+      uses: actions/checkout@v2.3.4
+
+    - name: Get references
+      shell: pwsh
+      run: |
+        Invoke-WebRequest -Uri ${{ env.EXILED_REFERENCES_URL }} -OutFile ${{ github.workspace }}/References.zip
+        Expand-Archive -Path References.zip -DestinationPath ${{ env.EXILED_REFERENCES_PATH }}
+        
+    - name: Restore projects
+      run: dotnet restore CustomUnit
+
+    - name: Build
+      env:
+        EXILED_REFERENCES: ${{ env.EXILED_REFERENCES_PATH }}
+      shell: pwsh
+      run: dothen build CustomUnit -c release
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Build Results
+        path: bin/Release
