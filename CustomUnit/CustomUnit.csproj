@@ -32,13 +32,30 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>$(EXILED_REFERENCES)\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(EXILED_REFERENCES)\Assembly-CSharp-Publicized.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>$(EXILED_REFERENCES)\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
-    <Reference Include="Mirror, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mirror.dll</HintPath>
+    <Reference Include="Exiled.API">
+      <HintPath>$(EXILED_REFERENCES)\Exiled.API.dll</HintPath>
+    </Reference>
+    <Reference Include="Exiled.Events">
+      <HintPath>$(EXILED_REFERENCES)\Exiled.Events.dll</HintPath>
+    </Reference>
+    <Reference Include="Exiled.Loader">
+      <HintPath>$(EXILED_REFERENCES)\Exiled.Loader.dll</HintPath>
+    </Reference>
+    <Reference Include="Exiled.Permissions">
+      <HintPath>$(EXILED_REFERENCES)\Exiled.Permissions.dll</HintPath>
+    </Reference>
+    <Reference Include="PluginAPI">
+      <HintPath>$(EXILED_REFERENCES)\PluginAPI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -50,50 +67,27 @@
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>$(EXILED_REFERENCES)\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
-    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>$(EXILED_REFERENCES)\Assembly-CSharp-Publicized.dll</HintPath>
+      <HintPath>$(EXILED_REFERENCES)\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="CommandSystem.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>$(EXILED_REFERENCES)\CommandSystem.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Exiled.API, Version=6.1.0.0, Culture=neutral, processorArchitecture=Amd64">
-      <HintPath>$(EXILED_REFERENCES)\Exiled.API.dll</HintPath>
-    </Reference>
-    <Reference Include="Exiled.CreditTags, Version=6.1.0.0, Culture=neutral, processorArchitecture=Amd64">
-      <HintPath>$(EXILED_REFERENCES)\Exiled.CreditTags.dll</HintPath>
-    </Reference>
-    <Reference Include="Exiled.CustomItems, Version=6.1.0.0, Culture=neutral, processorArchitecture=Amd64">
-      <HintPath>$(EXILED_REFERENCES)\Exiled.CustomItems.dll</HintPath>
-    </Reference>
-    <Reference Include="Exiled.CustomRoles, Version=6.1.0.0, Culture=neutral, processorArchitecture=Amd64">
-      <HintPath>$(EXILED_REFERENCES)\Exiled.CustomRoles.dll</HintPath>
-    </Reference>
-    <Reference Include="Exiled.Events, Version=6.1.0.0, Culture=neutral, processorArchitecture=Amd64">
-      <HintPath>$(EXILED_REFERENCES)\Exiled.Events.dll</HintPath>
-    </Reference>
-    <Reference Include="Exiled.Loader, Version=6.1.0.0, Culture=neutral, processorArchitecture=Amd64">
-      <HintPath>$(EXILED_REFERENCES)\Exiled.Loader.dll</HintPath>
-    </Reference>
-    <Reference Include="Exiled.Permissions, Version=6.1.0.0, Culture=neutral, processorArchitecture=Amd64">
-      <HintPath>$(EXILED_REFERENCES)\Exiled.Permissions.dll</HintPath>
-    </Reference>
-    <Reference Include="Exiled.Updater, Version=3.1.2.0, Culture=neutral, processorArchitecture=Amd64">
-      <HintPath>$(EXILED_REFERENCES)\Exiled.Updater.dll</HintPath>
-    </Reference>
     <Reference Include="NorthwoodLib, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>$(EXILED_REFERENCES)\NorthwoodLib.dll</HintPath>
     </Reference>
-    <Reference Include="PluginAPI, Version=12.0.0.0, Culture=neutral, processorArchitecture=Amd64">
-      <HintPath>$(EXILED_REFERENCES)\PluginAPI.dll</HintPath>
+    <Reference Include="Mirror, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>$(EXILED_REFERENCES)\Mirror.dll</HintPath>
+    </Reference>
+    <Reference Include="YamlDotNet">
+      <HintPath>$(EXILED_REFERENCES)\YamlDotNet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Additions\SpawnLocation.cs" />
     <Compile Include="Commands\List.cs" />
     <Compile Include="Commands\Reload.cs" />
     <Compile Include="Commands\Spawn.cs" />
@@ -110,14 +104,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Lib.Harmony">
-      <Version>2.2.2</Version>
-    </PackageReference>
-    <PackageReference Include="YamlDotNet">
-      <Version>12.0.2</Version>
-    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
