@@ -8,7 +8,7 @@ using MEC;
 using Respawning;
 using System.Collections.Generic;
 using System.Linq;
-
+using CustomUnit.Additions;
 using Random = System.Random;
 
 namespace CustomUnit
@@ -19,12 +19,15 @@ namespace CustomUnit
         
         public void OnTeamChoose(RespawningTeamEventArgs ev)
         {
-            if (!SpawnChance(ev.NextKnownTeam, ev.Players))
+            if (new Random().Next(101) < 55)
             {
-                ev.IsAllowed = !SpawnTicket(ev.NextKnownTeam, ev.Players);
+                if (!SpawnChance(ev.NextKnownTeam, ev.Players))
+                {
+                    ev.IsAllowed = !SpawnTicket(ev.NextKnownTeam, ev.Players);
+                }
+                else
+                    ev.IsAllowed = false;
             }
-            else
-                ev.IsAllowed = false;
 
             Methods.AddChance(ev);
 
@@ -66,9 +69,9 @@ namespace CustomUnit
         {
             Random rn = new();
 
-            foreach (var un in Plugin.Chance.Where(x => x.Team == team))
+            foreach (var un in Plugin.Chance.Where(x => x.Team == team || x.Team == SpawnableTeamType.None))
             {
-                if (un.SpawnChance < rn.Next(101))
+                if (un.SpawnChance > rn.Next(101))
                 {
                     Timing.CallDelayed(0.5f, () =>
                     {
@@ -88,8 +91,14 @@ namespace CustomUnit
             if (team == SpawnableTeamType.ChaosInsurgency) tick = (int)Respawn.ChaosTickets;
             else if (team == SpawnableTeamType.NineTailedFox) tick = (int)Respawn.NtfTickets;
 
-            foreach (var conf in Plugin.Tickets.Where(x => x.Key.Team == team))
+            foreach (var conf in Plugin.Tickets.Where(x => x.Key.Team == team || x.Key.Team == SpawnableTeamType.None))
             {
+                if (conf.Key.Team == SpawnableTeamType.None)
+                {
+                    Log.Error("None teams can use only chance system!");
+                    continue;
+                }
+                
                 if (conf.Value < tick)
                     continue;
 
@@ -113,18 +122,16 @@ namespace CustomUnit
                     ? PlayerRoles.RoleTypeId.NtfCaptain.GetRandomSpawnLocation().Position
                     : PlayerRoles.RoleTypeId.ChaosConscript.GetRandomSpawnLocation().Position;
 
-                if (un.StaticSpawnPoints.Count != 0)
-                {
-                    var point = un.StaticSpawnPoints.RandomItem();
-                    if (new Random().Next(101) >= point.Chance)
-                        pos = point.Position;
-                }
+                var list = new List<SpawnPosition>();
+                list.AddRange(un.StaticSpawnPoints.Select(stpos => new SpawnPosition(stpos.Position, stpos.Chance)).ToList());
+                list.AddRange(un.DynamicSpawnPoints.Select(dnpos => new SpawnPosition(dnpos.Position, dnpos.Chance)));
+                list.AddRange(un.RoomSpawnPoints.Select(rmpos => new SpawnPosition(Methods.GetSpawnLocation(rmpos.RoomName), rmpos.Chance)));
 
-                if (un.DynamicSpawnPoints.Count != 0)
+                for (int i = 0; i < 15; i++)
                 {
-                    var point = un.DynamicSpawnPoints.RandomItem();
-                    if (new Random().Next(101) >= point.Chance)
-                        pos = point.Position;
+                    var it = list.RandomItem();
+                    if (new Random().Next(101) <= it.Chance)
+                        pos = it.Position;
                 }
 
                 player.Role.Set(un.Roles.ToList().RandomItem(), SpawnReason.Respawn);

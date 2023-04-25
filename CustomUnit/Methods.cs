@@ -12,7 +12,16 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using CustomUnit.Additions;
+using Exiled.API.Enums;
+using Exiled.API.Extensions;
+using Exiled.API.Features;
+using MapGeneration;
+using UnityEngine;
+
 using static Respawning.RespawnManager;
+
+using Random = System.Random;
 
 namespace CustomUnit;
 
@@ -146,5 +155,11 @@ public static class Methods
 
         AccessTools.Field(typeof(RespawnManager), nameof(RespawnManager._stopwatch)).SetValue(Singleton, watch);
         #endregion
+    }
+
+    public static Vector3 GetSpawnLocation(RoomName room)
+    {
+        var dr = Room.Get(x => x.RoomName == room).ToList().RandomItem().Doors.ToList().RandomItem();
+        return dr.Position + Vector3.up * 1.5f + dr.Transform.forward * 1.5f;
     }
 }
