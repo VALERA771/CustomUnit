@@ -22,7 +22,7 @@ jobs:
 
     steps:
 
-    - name: Setup .NET Core SDK
+    - name: Setup .NET
       uses: actions/setup-dotnet@v1.7.2
 
     - name: Checkout
@@ -34,6 +34,11 @@ jobs:
         Invoke-WebRequest -Uri ${{ env.EXILED_REFERENCES_URL }} -OutFile ${{ github.workspace }}\References.zip
         Expand-Archive -Path References.zip -DestinationPath ${{ env.EXILED_REFERENCES_PATH }}
         
+    - name: Setup MSBuild.exe
+      uses: microsoft/Setup-MSBuild@v1
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+        
     - name: Restore projects
       run: dotnet restore CustomUnit
 
@@ -41,10 +46,12 @@ jobs:
       env:
         EXILED_REFERENCES: ${{ env.EXILED_REFERENCES_PATH }}
       shell: pwsh
-      run: dotnet build CustomUnit -c release
+      run: |
+          msbuild CustomUnit\CustomUnit.csproj -t:rebuild -property:Configuration=Release -property:ReferencePath="${{ env.EXILED_REFERENCES_PATH }}"
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
         name: Build Results
         path: bin/Release
+        
