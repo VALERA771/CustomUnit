@@ -97,6 +97,12 @@ namespace CustomUnit.Configs
         [Description("Amount of ticket which team will have on start of the round")]
         public int StartTicket { get; set; } = 0;
 
+        [Description("Whether or not player's custom info should be edited")]
+        public bool AssignCustomInfo { get; set; } = true;
+
+        [Description("Text for soldiers' custom info. Replaces \"%name%\" with unit_name")]
+        public string CustomInfo { get; set; } = "%name% soldier";
+
         public override string ToString() => $"Name={UnitName} Team={Team}";
     }
 }

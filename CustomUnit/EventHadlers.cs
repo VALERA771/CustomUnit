@@ -125,7 +125,7 @@ namespace CustomUnit
                 var list = new List<SpawnPosition>();
                 list.AddRange(un.StaticSpawnPoints.Select(stpos => new SpawnPosition(stpos.Position, stpos.Chance)).ToList());
                 list.AddRange(un.DynamicSpawnPoints.Select(dnpos => new SpawnPosition(dnpos.Position, dnpos.Chance)));
-                list.AddRange(un.RoomSpawnPoints.Select(rmpos => new SpawnPosition(Methods.GetSpawnLocation(rmpos.RoomName), rmpos.Chance)));
+                list.AddRange(un.RoomSpawnPoints.Select(rmpos => new SpawnPosition(rmpos.RoomName.GetSpawnPos(), rmpos.Chance)));
 
                 for (int i = 0; i < 15; i++)
                 {
@@ -145,8 +145,11 @@ namespace CustomUnit
                 foreach (KeyValuePair<AmmoType, ushort> ammo in un.Ammos)
                     player.AddAmmo(ammo.Key, ammo.Value);
 
-                player.CustomInfo = un.UnitName + " soldier";
-                player.InfoArea = PlayerInfoArea.Nickname & PlayerInfoArea.CustomInfo & PlayerInfoArea.Badge;
+                if (un.AssignCustomInfo)
+                {
+                    player.CustomInfo = un.CustomInfo.Replace("%name%", un.UnitName);
+                    player.InfoArea = PlayerInfoArea.Nickname & PlayerInfoArea.CustomInfo & PlayerInfoArea.Badge;
+                }
 
                 Plugin.Soldiers.Add(player, un.UnitName);
             }
