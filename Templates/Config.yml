@@ -8,7 +8,6 @@ CustomUnit:
     PlayerDying:
       is_enabled: true # If false - this event won't affect anything
       chance: 100 # Chance that event will add tickets
-      event_type: PlayerDying # Should be same as above (in config values are not the same but they should be same)
       allow: # If player that fired that event has this role - event will add tickets (not ignoring checks above)
       - ChaosConscript
       - ClassD
