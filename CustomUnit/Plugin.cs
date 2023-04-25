@@ -19,7 +19,7 @@ namespace CustomUnit
 {
     public class Plugin : Plugin<Configs.Plugin>
     {
-        private readonly bool isBeta = false;
+        private readonly bool isBeta = true;
         
         public static Plugin Instance { get; private set; }
         public static Unit UnitConfig => new();
