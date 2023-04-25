@@ -20,9 +20,6 @@ jobs:
 
     - name: Checkout
       uses: actions/checkout@v2.3.4
-      
-    - name: Restore Packages
-      run: nuget restore
 
     - name: Get references
       shell: pwsh
