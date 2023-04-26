@@ -31,10 +31,8 @@ namespace CustomUnit
 
             Methods.AddChance(ev);
 
-            var x = Plugin.Tickets.Keys.Where(x => x.RemoveTicketOnOther && x != _lastSpawned);
-            
-            foreach (var unit in x)
-                Plugin.Tickets[unit] -= unit.TicketsToRemove;
+            foreach (var un in Plugin.Tickets.Keys)
+                Plugin.Tickets[un] -= un.TicketsToRemove;
         }
 
         public void OnShooting(ShotEventArgs ev)
