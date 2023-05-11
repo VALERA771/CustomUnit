@@ -10,19 +10,25 @@ team: ChaosInsurgency
 roles:
 - Tutorial
 - Scp939
-# List of static spawn points (Depends on coordinates). Leave null to use "team" spawnpoint
+# List of static spawn points (Depends on rooms). Leave null to use "team" spawnpoint
 dynamic_spawn_points:
-- location: Inside173Gate
+- location: Inside914
   chance: 100
 # List of static spawn points (Depends on coordinates). Leave null to use "team" spawnpoint
-static_spawn_points:
+static_spawn_points: 
 - name: 
   chance: 100
   position:
     x: 1
     y: 1
     z: 1
-# Should players on spawn have their default inventories? (If "false" items from inventory will be just added otherwise they'll replace defualt items
+# List of spawn points which is based on rooms
+room_spawn_points:
+- # The room name
+  room_name: Hcz049
+  # The chance to spawn unit there
+  chance: 100
+# Should players on spawn have their default inventories? (If "false" items from inventory will be just added otherwise they'll replace defualt items)
 override_inventory: true
 # Inventory item
 inventory:
@@ -50,3 +56,7 @@ tickets_to_remove: 30
 remove_ticket_on_other: true
 # Amount of ticket which team will have on start of the round
 start_ticket: 0
+# Whether or not player's custom info should be edited
+assign_custom_info: true
+# Text for soldiers' custom info. Replaces "%name%" with unit_name
+custom_info: '%name% soldier'

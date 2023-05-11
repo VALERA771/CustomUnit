@@ -4,7 +4,9 @@ using PluginAPI.Enums;
 using Respawning;
 using System.Collections.Generic;
 using System.ComponentModel;
+using CustomUnit.Additions;
 using Exiled.API.Features.Spawn;
+using MapGeneration;
 
 namespace CustomUnit.Configs
 {
@@ -41,6 +43,12 @@ namespace CustomUnit.Configs
 
         [Description("List of static spawn points (Depends on coordinates). Leave null to use \"team\" spawnpoint")]
         public List<StaticSpawnPoint> StaticSpawnPoints { get; set; } = new();
+
+        [Description("List of spawn points which is based on rooms")]
+        public List<RoomSpawnPoint> RoomSpawnPoints { get; set; } = new()
+        {
+            new(RoomName.Hcz049, 100)
+        };
 
         [Description(
             "Should players on spawn have their default inventories? (If \"false\" items from inventory will be just added otherwise they'll replace defualt items)")]
@@ -88,6 +96,12 @@ namespace CustomUnit.Configs
 
         [Description("Amount of ticket which team will have on start of the round")]
         public int StartTicket { get; set; } = 0;
+
+        [Description("Whether or not player's custom info should be edited")]
+        public bool AssignCustomInfo { get; set; } = true;
+
+        [Description("Text for soldiers' custom info. Replaces \"%name%\" with unit_name")]
+        public string CustomInfo { get; set; } = "%name% soldier";
 
         public override string ToString() => $"Name={UnitName} Team={Team}";
     }

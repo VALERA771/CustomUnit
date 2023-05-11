@@ -18,7 +18,7 @@ namespace CustomUnit.Configs
         public string UnitPath { get; set; } = Path.Combine(Paths.Exiled, "Units");
 
         [Description("Options for events. You can set only 1 option per event")]
-        public Dictionary<ServerEventType, RoleOptions> Options { get; set; } = new()
+        public Dictionary<ServerEventType, Options> Options { get; set; } = new()
         {
             [ServerEventType.PlayerDying] = new()
             {

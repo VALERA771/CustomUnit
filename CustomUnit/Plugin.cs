@@ -19,6 +19,8 @@ namespace CustomUnit
 {
     public class Plugin : Plugin<Configs.Plugin>
     {
+        private readonly bool isBeta = true;
+        
         public static Plugin Instance { get; private set; }
         public static Unit UnitConfig => new();
         public static string ExampleUnit { get; private set; }
@@ -43,6 +45,9 @@ namespace CustomUnit
                 Directory.CreateDirectory(Instance.Config.UnitPath);
                 Log.Debug("Created directory for plugin");
             }
+
+            if (isBeta)
+                Log.Warn("You're using beta version of plugin! Please, report all bugs on github");
 
             Events = new EventHadlers();
             RegisterEvents();
