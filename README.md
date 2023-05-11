@@ -1,4 +1,7 @@
 ![Github All Downloads](https://img.shields.io/github/downloads/VALERA771/CustomTeam/total.svg?style=for-the-badge)
+<a href="https://github.com/VALERA771/CustomUnit/releases">
+  <img src="https://img.shields.io/github/release/VALERA771/CustomUnit/all.svg?style=for-the-badge" alt="GitHub Releases">
+</a>
 
 # CustomTeam
 Allows you to create own custom team
