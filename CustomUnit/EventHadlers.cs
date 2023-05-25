@@ -146,10 +146,10 @@ namespace CustomUnit
                 if (un.AssignCustomInfo)
                 {
                     player.CustomInfo = un.CustomInfo.Replace("%name%", un.UnitName);
-                    player.InfoArea = PlayerInfoArea.Nickname & PlayerInfoArea.CustomInfo & PlayerInfoArea.Badge;
+                    player.InfoArea &= PlayerInfoArea.CustomInfo;
                 }
 
-                Plugin.Soldiers.Add(player, un.UnitName);
+                Plugin.Soldiers[player] = un.UnitName;
             }
 
             Cassie.Message(un.CassieText.Replace("%name%", un.UnitName), isSubtitles: un.Subtiteled);
