@@ -1,16 +1,17 @@
 ﻿using UnityEngine;
 
-namespace CustomUnit.Additions;
-
-public struct SpawnPosition
+namespace CustomUnit.Additions
 {
-    public SpawnPosition(Vector3 position, float chance)
+    public struct SpawnPosition
     {
-        Position = position;
-        Chance = chance;
+        public SpawnPosition(Vector3 position, float chance)
+        {
+            Position = position;
+            Chance = chance;
+        }
+    
+        public Vector3 Position { get; }
+    
+        public float Chance { get; }
     }
-    
-    public Vector3 Position { get; }
-    
-    public float Chance { get; }
 }

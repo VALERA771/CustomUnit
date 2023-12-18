@@ -26,7 +26,6 @@ namespace CustomUnit
         public static string ExampleUnit { get; private set; }
 
         public override string Name => "Custom Unit";
-        public override string Prefix => Assembly.GetName().Name;
         public override string Author => "VALERA771#1471";
         public override Version Version => Assembly.GetName().Version;
         public override Version RequiredExiledVersion => new(6, 0, 0);
