@@ -48,7 +48,7 @@ namespace CustomUnit
             if (isBeta)
                 Log.Warn("You're using beta version of plugin! Please, report all bugs on github");
 
-            Events = new EventHadlers();
+            Events = new EventHandlers();
             RegisterEvents();
 
             Serializer = Loader.Serializer;
@@ -119,7 +119,7 @@ namespace CustomUnit
         }
 
         public static Dictionary<Exiled.API.Features.Player, string> Soldiers { get; set; } = new();
-        public static EventHadlers Events { get; private set; }
+        public static EventHandlers Events { get; private set; }
 
         public static Dictionary<string, Unit> Configs { get; set; } = new();
         public static HashSet<Unit> Chance { get; set; } = new();

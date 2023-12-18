@@ -38,6 +38,10 @@
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp-Publicized.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -67,7 +71,7 @@
     <Compile Include="Commands\Tickets.cs" />
     <Compile Include="Configs\Plugin.cs" />
     <Compile Include="Configs\Unit.cs" />
-    <Compile Include="EventHadlers.cs" />
+    <Compile Include="EventHandlers.cs" />
     <Compile Include="EventOptions\Options.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Methods.cs" />

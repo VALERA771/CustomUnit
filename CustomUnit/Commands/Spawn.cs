@@ -87,7 +87,7 @@ namespace CustomUnit.Commands
                         if (cond)
                         {
                             Log.Info(2);
-                            EventHadlers.Spawn(unit,
+                            EventHandlers.Spawn(unit,
                                 spawn.GetRange(num,
                                     RespawnManager.SpawnableTeams[unit.Team].MaxWaveSize > spawn.Count
                                         ? spawn.Count
@@ -102,7 +102,7 @@ namespace CustomUnit.Commands
                             {
                                 if (Random.Range(0, 101) < unit.SpawnChance)
                                 {
-                                    EventHadlers.Spawn(unit,
+                                    EventHandlers.Spawn(unit,
                                         spawn.GetRange(num,
                                             RespawnManager.SpawnableTeams[unit.Team].MaxWaveSize > spawn.Count
                                                 ? RespawnManager.SpawnableTeams[unit.Team].MaxWaveSize - spawn.Count
@@ -122,12 +122,12 @@ namespace CustomUnit.Commands
                                 switch (unit.Team)
                                 {
                                     case SpawnableTeamType.NineTailedFox when Respawn.NtfTickets < Plugin.Tickets[unit]:
-                                        EventHadlers.Spawn(unit, spawn.GetRange(num, RespawnManager.SpawnableTeams[unit.Team].MaxWaveSize - num), unit.Team);
+                                        EventHandlers.Spawn(unit, spawn.GetRange(num, RespawnManager.SpawnableTeams[unit.Team].MaxWaveSize - num), unit.Team);
 
                                         response = "Successfully spawned!";
                                         return true;
                                     case SpawnableTeamType.ChaosInsurgency when Respawn.ChaosTickets < Plugin.Tickets[unit]:
-                                        EventHadlers.Spawn(unit, spawn.GetRange(num, RespawnManager.SpawnableTeams[unit.Team].MaxWaveSize - num), unit.Team);
+                                        EventHandlers.Spawn(unit, spawn.GetRange(num, RespawnManager.SpawnableTeams[unit.Team].MaxWaveSize - num), unit.Team);
 
                                         response = "Successfully spawned!";
                                         return true;
