@@ -1,41 +1,39 @@
-name: Build
-
+name: CI Build
 on:
-  push:
-    branches:
-    - master
-  pull_request:
-    branches:
-    - master
-    - dev
   workflow_dispatch:
-
+env:
+  REFERENCES_URL: https://misaka-zerotwo.github.io/SL-References/Dev.zip
+  REFERENCES_PATH: ${{ github.workspace }}/References
 jobs:
-
   build:
-
     runs-on: windows-latest
 
     steps:
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v3
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1.7.2
+      - uses: actions/checkout@v3.3.0
 
-    - name: Checkout
-      uses: actions/checkout@v2.3.4
-        
-    - name: Restore projects
-      run: dotnet restore CustomUnit
+      - name: Restore Packages
+        run: nuget restore
 
-    - name: Build
-      env:
-        EXILED_REFERENCES: D:\a\CustomUnit\CustomUnit\.github\workflows\Refs
-      shell: pwsh
-      run: dotnet build CustomUnit -c release
+      - name: Get Build References
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri ${{ env.REFERENCES_URL }} -OutFile ${{ github.workspace }}/Dev.zip
+          Expand-Archive -Path Dev.zip -DestinationPath ${{ env.REFERENCES_PATH }}
 
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: Build Results
-        path: bin/Release
-        
+      - name: Setup MSBuild.exe
+        uses: microsoft/Setup-MSBuild@v1
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+
+      - name: Build
+        run: | 
+          msbuild CustomUnit\CustomUnit.csproj -t:rebuild -property:Configuration=Release -property:ReferencePath="${{ env.REFERENCES_PATH }}"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build Result
+          path: "CustomUnit/bin/Release/CustomUnit.dll"

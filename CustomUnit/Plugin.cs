@@ -26,7 +26,6 @@ namespace CustomUnit
         public static string ExampleUnit { get; private set; }
 
         public override string Name => "Custom Unit";
-        public override string Prefix => Assembly.GetName().Name;
         public override string Author => "VALERA771#1471";
         public override Version Version => Assembly.GetName().Version;
         public override Version RequiredExiledVersion => new(6, 0, 0);
@@ -49,7 +48,7 @@ namespace CustomUnit
             if (isBeta)
                 Log.Warn("You're using beta version of plugin! Please, report all bugs on github");
 
-            Events = new EventHadlers();
+            Events = new EventHandlers();
             RegisterEvents();
 
             Serializer = Loader.Serializer;
@@ -120,7 +119,7 @@ namespace CustomUnit
         }
 
         public static Dictionary<Exiled.API.Features.Player, string> Soldiers { get; set; } = new();
-        public static EventHadlers Events { get; private set; }
+        public static EventHandlers Events { get; private set; }
 
         public static Dictionary<string, Unit> Configs { get; set; } = new();
         public static HashSet<Unit> Chance { get; set; } = new();
