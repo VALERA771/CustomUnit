@@ -1,23 +1,14 @@
 ﻿using CustomUnit.EventOptions;
 using Exiled.Events.EventArgs.Interfaces;
 using GameCore;
-using HarmonyLib;
 using NorthwoodLib.Pools;
 using PlayerRoles;
-using PluginAPI.Enums;
 using PluginAPI.Events;
 using Respawning;
 using Respawning.NamingRules;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using CustomUnit.Additions;
-using Exiled.API.Enums;
-using Exiled.API.Extensions;
-using Exiled.API.Features;
-using MapGeneration;
-using UnityEngine;
 
 using static Respawning.RespawnManager;
 
@@ -71,14 +62,14 @@ public static class Methods
             return;
         }
 
-        if (!EventManager.ExecuteEvent(ServerEventType.TeamRespawn, team))
+        if (!EventManager.ExecuteEvent(new TeamRespawnEvent(team, list)))
         {
             RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.UponRespawn, team);
-            AccessTools.Field(typeof(RespawnManager), nameof(RespawnManager.NextKnownTeam)).SetValue(Singleton, SpawnableTeamType.None);
+            Singleton.NextKnownTeam = SpawnableTeamType.None;
             return;
         }
 
-        if ((bool)AccessTools.Field(typeof(RespawnManager), nameof(RespawnManager._prioritySpawn)).GetValue(Singleton))
+        if (Singleton._prioritySpawn)
         {
             list = list.OrderByDescending(item => item.roleManager.CurrentRole.ActiveTime).ToList();
         }
@@ -134,26 +125,23 @@ public static class Methods
 
         
         ListPool<ReferenceHub>.Shared.Return(list2);
-        AccessTools.Field(typeof(RespawnManager), nameof(RespawnManager.NextKnownTeam)).SetValue(Singleton, SpawnableTeamType.None);
+        Singleton.NextKnownTeam = SpawnableTeamType.None;
         #endregion
 
         #region RestartSequence
-        AccessTools.Field(typeof(RespawnManager), nameof(RespawnManager._timeForNextSequence)).SetValue(Singleton, UnityEngine.Random.Range(ConfigFile.ServerConfig.GetFloat("minimum_MTF_time_to_spawn", 280f), ConfigFile.ServerConfig.GetFloat("maximum_MTF_time_to_spawn", 350f)));
-        AccessTools.Field(typeof(RespawnManager), nameof(RespawnManager._curSequence)).SetValue(Singleton, RespawnSequencePhase.RespawnCooldown);
+        
+        Singleton._timeForNextSequence = UnityEngine.Random.Range(ConfigFile.ServerConfig.GetFloat("minimum_MTF_time_to_spawn", 280f), ConfigFile.ServerConfig.GetFloat("maximum_MTF_time_to_spawn", 350f));
+        Singleton._curSequence = RespawnSequencePhase.RespawnCooldown;
 
-        var watch = (Stopwatch)AccessTools.Field(typeof(RespawnManager), nameof(RespawnManager._stopwatch))
-            .GetValue(Singleton);
-
-        if (watch.IsRunning)
+        if (Singleton._stopwatch.IsRunning)
         {
-            watch.Restart();
+            Singleton._stopwatch.Restart();
         }
         else
         {
-            watch.Start();
+            Singleton._stopwatch.Start();
         }
 
-        AccessTools.Field(typeof(RespawnManager), nameof(RespawnManager._stopwatch)).SetValue(Singleton, watch);
         #endregion
     }
 }
