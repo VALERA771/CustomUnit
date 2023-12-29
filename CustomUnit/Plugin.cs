@@ -4,6 +4,7 @@ using Exiled.API.Features;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using CustomUnit.EventOptions;
 using Exiled.Loader;
 using YamlDotNet.Core;
@@ -26,7 +27,7 @@ namespace CustomUnit
         public static string ExampleUnit { get; private set; }
 
         public override string Name => "Custom Unit";
-        public override string Author => "VALERA771#1471";
+        public override string Author => Assembly.GetCustomAttribute<AssemblyCompanyAttribute>().Company;
         public override Version Version => Assembly.GetName().Version;
         public override Version RequiredExiledVersion => new(6, 0, 0);
 

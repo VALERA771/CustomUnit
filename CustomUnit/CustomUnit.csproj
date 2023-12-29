@@ -61,6 +61,9 @@
     <Reference Include="Mirror, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>$(EXILED_REFERENCES)\Mirror.dll</HintPath>
     </Reference>
+    <Reference Include="Pooling.dll">
+      <HintPath>$(EXILED_REFERENCES)\Pooling.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Additions\SpawnPosition.cs" />
@@ -83,7 +86,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="EXILED" Version="8.4.3" />
+    <PackageReference Include="EXILED" Version="8.5.0" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
