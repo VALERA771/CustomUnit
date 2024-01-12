@@ -6,6 +6,9 @@
 # CustomTeam
 Allows you to create own custom team
 
+# Important notice
+Plugin won't be updated to EXILED 9.0 because `CustomModules.API.Features.CustomRoles.CustomTeam` will be added. This plugin can be reworked to add easier way to manipulate these teams. Can be requested
+
 # Issues
 There is 3 ways how can you report about your problem
 1. Open issue in guthub
